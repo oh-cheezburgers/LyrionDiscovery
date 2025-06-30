@@ -5,12 +5,12 @@ using System.Text;
 
 namespace LmsDiscovery.Tests
 {
-    public class DiscoveryShould
+    public class DiscovererShould
     {
         private Mock<UdpClient> udpClientMock;
         private const string handshake = "eIPAD\0NAME\0VERS\0UUID\0JSON\0CLIP\0";
 
-        public DiscoveryShould()
+        public DiscovererShould()
         {
             udpClientMock = new Mock<UdpClient>();
             udpClientMock.CallBase = true;
