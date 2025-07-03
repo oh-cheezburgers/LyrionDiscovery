@@ -35,11 +35,10 @@ namespace LmsDiscovery.Tests
             //Arrange
             MockSend();
             MockReceive(handshake);
-            var sut = new Discoverer();
             var expected = new List<string> { handshake };
 
             //Act
-            var response = sut.Discover(TimeSpan.FromSeconds(1), udpClientMock.Object);
+            var response = Discoverer.Discover(TimeSpan.FromSeconds(1), udpClientMock.Object);
 
             //Assert
             response.Should().BeEquivalentTo(expected);
@@ -49,8 +48,7 @@ namespace LmsDiscovery.Tests
         public void Map()
         {
             //Arrange
-            var sut = new Discoverer();
-            var expected = new Server
+            var expected = new MediaServer
             {
                 Name = "MEDIA-SERVER",
                 Version = "9.0.2",
@@ -61,7 +59,7 @@ namespace LmsDiscovery.Tests
             var response = "ENAMEMEDIA-SERVERVERS9.0.2UUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6JSON9000CLIP9090";
 
             //Act
-            var result = sut.Map(response);
+            var result = Discoverer.Map(response);
 
             //Assert
             result.Should().BeEquivalentTo(expected);

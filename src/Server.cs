@@ -3,7 +3,7 @@ namespace LmsDiscovery
     /// <summary>
     /// Represents a Logitech Media Server discovered on the local network.
     /// </summary>
-    public class Server
+    public class MediaServer
     {
         /// <summary>
         /// Gets or sets the name of the server.
