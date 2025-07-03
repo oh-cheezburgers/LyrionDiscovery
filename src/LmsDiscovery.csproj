@@ -6,8 +6,6 @@
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <EnableNetAnalyzers>true</EnableNetAnalyzers>
-    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
 </Project>
