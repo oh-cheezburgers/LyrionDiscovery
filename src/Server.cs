@@ -8,26 +8,26 @@ namespace LmsDiscovery
         /// <summary>
         /// Gets or sets the name of the server.
         /// </summary>
-        public required string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// Gets or sets the version of the server software.
         /// </summary>
-        public required string Version { get; set; }
+        public string? Version { get; set; }
 
         /// <summary>
         /// Gets or sets the unique identifier (UUID) of the server.
         /// </summary>
-        public required string UUID { get; set; }
+        public string? UUID { get; set; }
 
         /// <summary>
         /// Gets or sets the JSON port used by the server.
         /// </summary>
-        public required string Json { get; set; }
+        public string? Json { get; set; }
 
         /// <summary>
         /// Gets or sets the CLI port used by the server.
         /// </summary>
-        public required string Clip { get; set; }
+        public string? Clip { get; set; }
     }
 }

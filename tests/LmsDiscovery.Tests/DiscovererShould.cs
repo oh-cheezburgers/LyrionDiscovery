@@ -13,7 +13,7 @@ namespace LmsDiscovery.Tests
         public DiscovererShould()
         {
             udpClientMock = new Mock<UdpClient>();
-            udpClientMock.CallBase = true;           
+            udpClientMock.CallBase = true;
         }
 
         private void MockSend()
@@ -34,7 +34,7 @@ namespace LmsDiscovery.Tests
         {
             //Arrange
             MockSend();
-            MockReceive(handshake);                        
+            MockReceive(handshake);
             var sut = new Discoverer();
             var expected = new List<string> { handshake };
 

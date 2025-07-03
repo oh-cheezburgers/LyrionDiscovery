@@ -71,5 +71,39 @@ namespace LmsDiscovery
 
             return server;
         }
+
+        /// <summary>
+        /// Parses a server response string into a dictionary of key-value pairs.
+        /// </summary>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        public Dictionary<string, string> Parse(string response)
+        {
+            var regex = new Regex(@"(NAME|VERS|JSON|CLIP)[\p{Cc}]|(UUID)[\$]");
+            var delimiters = new[] { "NAME", "VERS", "UUID", "JSON", "CLIP" };
+            var parts = regex.Split(response);
+
+            var dict = new Dictionary<string, string>();
+            string? lastKey = null;
+            foreach (var part in parts)
+            {
+                if (part == "E")
+                {
+                    continue; // Skip the initial 'E' character
+                }
+                if (delimiters.Contains(part))
+                {
+                    lastKey = part;
+                    continue;
+                }
+                if (lastKey != null)
+                {
+                    dict.Add(lastKey, part);
+                    lastKey = null;
+                }
+            }
+
+            return dict;
+        }
     }
 }
