@@ -93,5 +93,21 @@ namespace LmsDiscovery.Tests
             //Assert
             result.Should().BeEquivalentTo(expected);
         }
+
+        [Fact]
+        public void HandleRequestTimeout()
+        {
+            //Arrange
+            MockSend();
+            udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
+                         .Throws(new System.Net.Sockets.SocketException((int)System.Net.Sockets.SocketError.TimedOut));
+            var expected = new List<string> { handshake };
+
+            //Act
+            var response = Discoverer.Discover(TimeSpan.FromSeconds(1), udpClientMock.Object);
+
+            //Assert
+            response.Should().BeEmpty();
+        }
     }
 }
