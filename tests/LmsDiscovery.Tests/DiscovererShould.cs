@@ -19,14 +19,14 @@ namespace LmsDiscovery.Tests
         private void MockSend()
         {
             udpClientMock.Setup(m => m.Send(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<IPEndPoint>()))
-                            .Returns(1);
+                         .Returns(1);
         }
 
         private void MockReceive(string handshake)
         {
             udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
-                            .Callback(() => Thread.Sleep(1000))
-                            .Returns(Encoding.UTF8.GetBytes(handshake));
+                         .Callback(() => Thread.Sleep(1000))
+                         .Returns(Encoding.UTF8.GetBytes(handshake));
         }
 
         [Fact]
@@ -56,10 +56,39 @@ namespace LmsDiscovery.Tests
                 Json = "9000",
                 Clip = "9090"
             };
-            var response = "ENAMEMEDIA-SERVERVERS9.0.2UUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6JSON9000CLIP9090";
+
+            var parsedResponse = new Dictionary<string, string>
+            {
+                { "NAME", expected.Name },
+                { "VERS", expected.Version },
+                { "UUID", expected.UUID },
+                { "JSON", expected.Json },
+                { "CLIP", expected.Clip }
+            };
 
             //Act
-            var result = Discoverer.Map(response);
+            var result = Discoverer.Map(parsedResponse);
+
+            //Assert
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public void Parse()
+        {
+            //Arrange
+            var response = "ENAMEMEDIA-SERVERVERS9.0.2UUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6JSON9000CLIP9090";
+            var expected = new Dictionary<string, string>
+            {
+                { "NAME", "MEDIA-SERVER" },
+                { "VERS", "9.0.2" },
+                { "UUID", "b34f68fa-e9ae-4238-b2ce-18bb48fa26a6" },
+                { "JSON", "9000" },
+                { "CLIP", "9090" }
+            };
+
+            //Act
+            var result = Discoverer.Parse(response);
 
             //Assert
             result.Should().BeEquivalentTo(expected);

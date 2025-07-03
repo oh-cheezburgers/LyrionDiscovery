@@ -56,19 +56,18 @@ namespace LmsDiscovery
         }
 
         /// <summary>
-        /// Maps a server response string to a Server object.
+        /// Maps a dictionary of key-value pairs to a <see cref="MediaServer"/> object.
         /// </summary>
-        /// <param name="response"></param>
         /// <returns>A <see cref="MediaServer"/> object populated with data extracted from the response string.</returns>
-        public static MediaServer Map(string response)
+        public static MediaServer Map(IDictionary<string, string> keyValuePairs)
         {
             var server = new MediaServer
             {
-                Name = new Regex("(?<=NAME).*(?=VERS)").Match(response).Value,
-                Version = new Regex("(?<=VERS).*(?=UUID)").Match(response).Value,
-                UUID = new Regex("(?<=UUID\\$).*(?=JSON)").Match(response).Value,
-                Json = new Regex("(?<=JSON).*(?=CLIP)").Match(response).Value,
-                Clip = new Regex("(?<=CLIP).*").Match(response).Value,
+                Name = keyValuePairs.TryGetValue("NAME", out var name) ? name : null,
+                Version = keyValuePairs.TryGetValue("VERS", out var version) ? version : null,
+                UUID = keyValuePairs.TryGetValue("UUID", out var uuid) ? uuid : null,
+                Json = keyValuePairs.TryGetValue("JSON", out var json) ? json : null,
+                Clip = keyValuePairs.TryGetValue("CLIP", out var clip) ? clip : null
             };
 
             return server;
