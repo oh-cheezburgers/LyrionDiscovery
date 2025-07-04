@@ -5,10 +5,10 @@ using System.Net.Sockets;
 namespace LmsDiscovery;
 
 /// <summary>
-/// Provides a wrapper for the <see cref="UdpClient"/> class, implementing <see cref="IUdpClientWrapper"/>.
+/// Provides a wrapper for the <see cref="UdpClient"/> class, implementing <see cref="IUdpClient"/>.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class UdpClientWrapper : IUdpClientWrapper
+public class UdpClientWrapper : IUdpClient
 {
 
     private readonly UdpClient udpClient;

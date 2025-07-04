@@ -7,13 +7,13 @@ namespace LmsDiscovery.Tests
 {
     public class DiscoveryShould
     {
-        private Mock<IUdpClientWrapper> udpClientMock;
+        private Mock<IUdpClient> udpClientMock;
         private const string handshake = "eIPAD\0NAME\0VERS\0UUID\0JSON\0CLIP\0";
 
         public DiscoveryShould()
         {
             var socketMock = new Mock<ISocketWrapper>();
-            udpClientMock = new Mock<IUdpClientWrapper>();
+            udpClientMock = new Mock<IUdpClient>();
             socketMock.Setup(m => m.EnableBroadcast).Returns(true);
             udpClientMock.Setup(m => m.Client.ReceiveTimeout).Returns(1000);
             udpClientMock.Setup(m => m.Client).Returns(socketMock.Object);

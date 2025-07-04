@@ -21,7 +21,7 @@ namespace LmsDiscovery
         /// <param name="udpClient">The UdpClient instance used for sending and receiving UDP packets.</param>
         /// <param name="port">The UDP port to use for discovery (default is 3483).</param>
         /// <returns>A list of server response strings received during discovery.</returns>
-        public static IReadOnlyList<string> Discover(CancellationToken cancellationToken, TimeSpan requestTimeout, IUdpClientWrapper udpClient, int port = 3483)
+        public static IReadOnlyList<string> Discover(CancellationToken cancellationToken, TimeSpan requestTimeout, IUdpClient udpClient, int port = 3483)
         {
             ArgumentNullException.ThrowIfNull(udpClient);
 

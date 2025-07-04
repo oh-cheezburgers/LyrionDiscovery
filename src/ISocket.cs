@@ -6,7 +6,7 @@ namespace LmsDiscovery;
 /// <summary>
 /// Defines an interface for a socket wrapper that provides basic socket operations and properties.
 /// </summary>
-public interface ISocketWrapper : IDisposable
+public interface ISocket : IDisposable
 {
     /// <summary>
     /// Gets or sets a value indicating whether the socket should enable broadcast.

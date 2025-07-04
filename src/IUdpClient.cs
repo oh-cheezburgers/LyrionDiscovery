@@ -5,12 +5,12 @@ namespace LmsDiscovery;
 /// <summary>
 /// Provides an abstraction for a UDP client wrapper with basic send and receive functionality.
 /// </summary>
-public interface IUdpClientWrapper : IDisposable
+public interface IUdpClient : IDisposable
 {
     /// <summary>
     /// Gets or sets the underlying socket client wrapper.
     /// </summary>
-    ISocketWrapper Client { get; set; }
+    ISocket Client { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the UDP client can send broadcast packets.
