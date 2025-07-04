@@ -28,5 +28,5 @@ public interface ISocketWrapper : IDisposable
     /// Gets the underlying raw <see cref="Socket"/> instance.
     /// </summary>
     /// <returns>The raw <see cref="Socket"/> object.</returns>
-    public Socket GetRawSocket();
+    public Socket GetUnderlyingSocket();
 }

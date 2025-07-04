@@ -41,15 +41,15 @@ public class SocketWrapper : ISocketWrapper, IDisposable
         socket.Bind(localEP);
     }
 
+    /// <summary>
+    /// Gets the underlying raw <see cref="Socket"/> instance.
+    /// </summary>
+    /// <returns>The wrapped <see cref="Socket"/>.</returns>
+    public Socket GetUnderlyingSocket() => socket;
+
     /// <inheritdoc/>
     public void Dispose()
     {
         socket.Dispose();
     }
-
-    /// <summary>
-    /// Gets the underlying raw <see cref="Socket"/> instance.
-    /// </summary>
-    /// <returns>The wrapped <see cref="Socket"/>.</returns>
-    public Socket GetRawSocket() => socket;
 }

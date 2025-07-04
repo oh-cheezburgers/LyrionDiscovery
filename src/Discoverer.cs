@@ -25,9 +25,10 @@ namespace LmsDiscovery
         {
             ArgumentNullException.ThrowIfNull(udpClient);
 
+            var servers = new List<string>();
+
             using (udpClient)
             {
-                var servers = new List<string>();
                 udpClient.Client.Bind(new IPEndPoint(IPAddress.Any, port));
                 udpClient.EnableBroadcast = true;
                 udpClient.Client.ReceiveTimeout = (int)requestTimeout.TotalMilliseconds;
@@ -53,11 +54,10 @@ namespace LmsDiscovery
                     {
                         break;
                     }
-
                 }
-
-                return servers;
             }
+
+            return servers;
         }
 
         /// <summary>

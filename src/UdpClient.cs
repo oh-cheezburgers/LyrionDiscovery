@@ -8,7 +8,7 @@ namespace LmsDiscovery;
 /// Provides a wrapper for the <see cref="UdpClient"/> class, implementing <see cref="IUdpClientWrapper"/>.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class UdpClientWrapper : IDisposable, IUdpClientWrapper
+public class UdpClientWrapper : IUdpClientWrapper
 {
 
     private readonly UdpClient udpClient;
@@ -23,8 +23,8 @@ public class UdpClientWrapper : IDisposable, IUdpClientWrapper
     /// <inheritdoc cref="UdpClient.Client"/>
     public ISocketWrapper Client
     {
-        get => new SocketWrapper(udpClient.Client);
-        set => udpClient.Client = ((SocketWrapper)value).GetRawSocket(); // Need to expose raw socket
+        get => new SocketWrapper(udpClient.Client); // Wrap the underlying Socket in a SocketWrapper
+        set => value.GetUnderlyingSocket();
     }
 
     /// <inheritdoc cref="UdpClient.EnableBroadcast"/>
@@ -41,9 +41,7 @@ public class UdpClientWrapper : IDisposable, IUdpClientWrapper
     /// <inheritdoc cref="UdpClient.Receive(ref IPEndPoint)"/>
     public byte[] Receive(ref IPEndPoint endPoint) => udpClient.Receive(ref endPoint);
 
-    /// <summary>
-    /// Releases all resources used by the <see cref="UdpClientWrapper"/>.
-    /// </summary>
+    /// <inheritdoc cref="IDisposable.Dispose"/>
     public void Dispose()
     {
         udpClient.Dispose();

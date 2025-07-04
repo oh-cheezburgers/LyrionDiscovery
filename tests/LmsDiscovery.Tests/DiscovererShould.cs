@@ -47,6 +47,7 @@ namespace LmsDiscovery.Tests
 
             //Assert
             response.Should().BeEquivalentTo(expected);
+            udpClientMock.Verify(m => m.Dispose(), Times.Once);
         }
 
         [Fact]

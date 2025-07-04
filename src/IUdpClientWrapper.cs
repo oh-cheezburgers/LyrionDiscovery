@@ -18,11 +18,6 @@ public interface IUdpClientWrapper : IDisposable
     bool EnableBroadcast { get; set; }
 
     /// <summary>
-    /// Releases all resources used by the UDP client.
-    /// </summary>
-    new void Dispose();
-
-    /// <summary>
     /// Receives a UDP datagram sent by a remote host.
     /// </summary>
     /// <param name="endPoint">The remote endpoint from which the datagram was sent. This parameter is passed by reference and will be updated with the sender's endpoint.</param>
