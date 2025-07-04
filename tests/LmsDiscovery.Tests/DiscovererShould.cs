@@ -36,9 +36,10 @@ namespace LmsDiscovery.Tests
             MockSend();
             MockReceive(handshake);
             var expected = new List<string> { handshake };
+            var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
 
             //Act
-            var response = Discoverer.Discover(TimeSpan.FromSeconds(1), udpClientMock.Object);
+            var response = Discoverer.Discover(cancellationToken, TimeSpan.FromSeconds(1), udpClientMock.Object);
 
             //Assert
             response.Should().BeEquivalentTo(expected);
@@ -102,9 +103,10 @@ namespace LmsDiscovery.Tests
             udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
                          .Throws(new System.Net.Sockets.SocketException((int)System.Net.Sockets.SocketError.TimedOut));
             var expected = new List<string> { handshake };
+            var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
 
             //Act
-            var response = Discoverer.Discover(TimeSpan.FromSeconds(1), udpClientMock.Object);
+            var response = Discoverer.Discover(cancellationToken, TimeSpan.FromSeconds(1), udpClientMock.Object);
 
             //Assert
             response.Should().BeEmpty();

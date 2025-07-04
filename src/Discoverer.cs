@@ -17,41 +17,44 @@ namespace LmsDiscovery
         /// <summary>
         /// Discovers Logitech Media Servers within the specified timeout using the provided UdpClient.
         /// </summary>
-        /// <param name="timeout">The maximum time to wait for server responses.</param>
+        /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+        /// <param name="requestTimeout">The maximum time to wait for server responses.</param>
         /// <param name="udpClient">The UdpClient instance used for sending and receiving UDP packets.</param>
+        /// <param name="port">The UDP port to use for discovery (default is 3483).</param>
         /// <returns>A list of server response strings received during discovery.</returns>
-        public static IReadOnlyList<string> Discover(TimeSpan timeout, UdpClient udpClient)
+        public static IReadOnlyList<string> Discover(CancellationToken cancellationToken, TimeSpan requestTimeout, UdpClient udpClient, int port = 3483)
         {
             ArgumentNullException.ThrowIfNull(udpClient);
 
             using (udpClient)
             {
                 var servers = new List<string>();
-
-                int PORT = 3483;
-                udpClient.Client.Bind(new IPEndPoint(IPAddress.Any, PORT));
+                udpClient.Client.Bind(new IPEndPoint(IPAddress.Any, port));
                 udpClient.EnableBroadcast = true;
-                udpClient.Client.ReceiveTimeout = (int)timeout.TotalMilliseconds;
+                udpClient.Client.ReceiveTimeout = (int)requestTimeout.TotalMilliseconds;
 
                 var data = Encoding.UTF8.GetBytes("eIPAD\0NAME\0VERS\0UUID\0JSON\0CLIP\0");
-                udpClient.Send(data, data.Length, new IPEndPoint(IPAddress.Broadcast, PORT));
+                udpClient.Send(data, data.Length, new IPEndPoint(IPAddress.Broadcast, port));
 
                 var from = new IPEndPoint(0, 0);
-
-                var stopwatch = new Stopwatch();
-                stopwatch.Start();
-                while (stopwatch.Elapsed < timeout)
+                while (true)
                 {
                     try
                     {
                         var recvBuffer = udpClient.Receive(ref from);
                         var response = Encoding.UTF8.GetString(recvBuffer);
                         servers.Add(response);
+                        cancellationToken.ThrowIfCancellationRequested();
                     }
                     catch (SocketException ex) when (ex.SocketErrorCode == SocketError.TimedOut)
                     {
                         break;
                     }
+                    catch (OperationCanceledException)
+                    {
+                        break;
+                    }
+
                 }
 
                 return servers;
