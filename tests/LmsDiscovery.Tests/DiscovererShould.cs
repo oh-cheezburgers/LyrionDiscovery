@@ -7,13 +7,16 @@ namespace LmsDiscovery.Tests
 {
     public class DiscovererShould
     {
-        private Mock<UdpClient> udpClientMock;
+        private Mock<IUdpClientWrapper> udpClientMock;
         private const string handshake = "eIPAD\0NAME\0VERS\0UUID\0JSON\0CLIP\0";
 
         public DiscovererShould()
         {
-            udpClientMock = new Mock<UdpClient>();
-            udpClientMock.CallBase = true;
+            var socketMock = new Mock<ISocketWrapper>();
+            udpClientMock = new Mock<IUdpClientWrapper>();
+            socketMock.Setup(m => m.EnableBroadcast).Returns(true);
+            udpClientMock.Setup(m => m.Client.ReceiveTimeout).Returns(1000);
+            udpClientMock.Setup(m => m.Client).Returns(socketMock.Object);
         }
 
         private void MockSend()
@@ -24,9 +27,10 @@ namespace LmsDiscovery.Tests
 
         private void MockReceive(string handshake)
         {
-            udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
-                         .Callback(() => Thread.Sleep(1000))
-                         .Returns(Encoding.UTF8.GetBytes(handshake));
+            udpClientMock.SetupSequence(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
+                         .Returns(Encoding.UTF8.GetBytes(handshake))
+                         .Throws(new System.Net.Sockets.SocketException((int)System.Net.Sockets.SocketError.TimedOut));
+
         }
 
         [Fact]
@@ -98,7 +102,7 @@ namespace LmsDiscovery.Tests
         [Fact]
         public void HandleRequestTimeout()
         {
-            //Arrange
+            // Arrange
             MockSend();
             udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
                          .Throws(new System.Net.Sockets.SocketException((int)System.Net.Sockets.SocketError.TimedOut));
