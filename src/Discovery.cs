@@ -11,7 +11,7 @@ namespace LmsDiscovery
     /// <summary>
     /// Provides methods to discover Logitech Media Servers on the local network.
     /// </summary>
-    public static class Discoverer
+    public static class Discovery
     {
         /// <summary>
         /// Discovers Logitech Media Servers within the specified timeout using the provided UdpClient.

@@ -5,12 +5,12 @@ using System.Text;
 
 namespace LmsDiscovery.Tests
 {
-    public class DiscovererShould
+    public class DiscoveryShould
     {
         private Mock<IUdpClientWrapper> udpClientMock;
         private const string handshake = "eIPAD\0NAME\0VERS\0UUID\0JSON\0CLIP\0";
 
-        public DiscovererShould()
+        public DiscoveryShould()
         {
             var socketMock = new Mock<ISocketWrapper>();
             udpClientMock = new Mock<IUdpClientWrapper>();
@@ -43,7 +43,7 @@ namespace LmsDiscovery.Tests
             var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
 
             //Act
-            var response = Discoverer.Discover(cancellationToken, TimeSpan.FromSeconds(1), udpClientMock.Object);
+            var response = Discovery.Discover(cancellationToken, TimeSpan.FromSeconds(1), udpClientMock.Object);
 
             //Assert
             response.Should().BeEquivalentTo(expected);
@@ -73,7 +73,7 @@ namespace LmsDiscovery.Tests
             };
 
             //Act
-            var result = Discoverer.Map(parsedResponse);
+            var result = Discovery.Map(parsedResponse);
 
             //Assert
             result.Should().BeEquivalentTo(expected);
@@ -94,7 +94,7 @@ namespace LmsDiscovery.Tests
             };
 
             //Act
-            var result = Discoverer.Parse(response);
+            var result = Discovery.Parse(response);
 
             //Assert
             result.Should().BeEquivalentTo(expected);
@@ -111,7 +111,7 @@ namespace LmsDiscovery.Tests
             var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
 
             //Act
-            var response = Discoverer.Discover(cancellationToken, TimeSpan.FromSeconds(1), udpClientMock.Object);
+            var response = Discovery.Discover(cancellationToken, TimeSpan.FromSeconds(1), udpClientMock.Object);
 
             //Assert
             response.Should().BeEmpty();
