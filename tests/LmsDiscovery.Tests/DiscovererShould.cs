@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Moq;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 
 namespace LmsDiscovery.Tests
@@ -12,7 +13,7 @@ namespace LmsDiscovery.Tests
 
         public DiscoveryShould()
         {
-            var socketMock = new Mock<ISocketWrapper>();
+            var socketMock = new Mock<ISocket>();
             udpClientMock = new Mock<IUdpClient>();
             socketMock.Setup(m => m.EnableBroadcast).Returns(true);
             udpClientMock.Setup(m => m.Client.ReceiveTimeout).Returns(1000);
@@ -27,10 +28,22 @@ namespace LmsDiscovery.Tests
 
         private void MockReceive(string handshake)
         {
-            udpClientMock.SetupSequence(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
-                         .Returns(Encoding.UTF8.GetBytes(handshake))
-                         .Throws(new System.Net.Sockets.SocketException((int)System.Net.Sockets.SocketError.TimedOut));
+            int callCount = 0;
 
+            udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
+                .Returns((ref IPEndPoint ep) =>
+                {
+                    if (callCount == 0)
+                    {
+                        callCount++;
+                        ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
+                        return Encoding.UTF8.GetBytes(handshake);
+                    }
+                    else
+                    {
+                        throw new OperationCanceledException();
+                    }
+                });
         }
 
         [Fact]
@@ -106,7 +119,7 @@ namespace LmsDiscovery.Tests
             // Arrange
             MockSend();
             udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
-                         .Throws(new System.Net.Sockets.SocketException((int)System.Net.Sockets.SocketError.TimedOut));
+                         .Throws(new SocketException((int)SocketError.TimedOut));
             var expected = new List<string> { handshake };
             var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
 
