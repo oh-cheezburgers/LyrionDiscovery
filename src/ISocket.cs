@@ -4,7 +4,8 @@ using System.Net.Sockets;
 namespace LmsDiscovery;
 
 /// <summary>
-/// Defines an interface for a socket wrapper that provides basic socket operations and properties.
+/// An abstraction of the <see cref="Socket"/> class to facilitate testing and abstraction.
+/// This interface allows for mocking and testing without relying on the actual network stack.
 /// </summary>
 public interface ISocket : IDisposable
 {
@@ -25,8 +26,8 @@ public interface ISocket : IDisposable
     int ReceiveTimeout { get; set; }
 
     /// <summary>
-    /// Gets the underlying raw <see cref="Socket"/> instance.
+    /// Gets the underlying <see cref="Socket"/> instance.
     /// </summary>
-    /// <returns>The raw <see cref="Socket"/> object.</returns>
+    /// <returns>The <see cref="Socket"/> object.</returns>
     public Socket GetUnderlyingSocket();
 }

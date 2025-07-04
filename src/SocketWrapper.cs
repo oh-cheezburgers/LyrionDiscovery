@@ -5,10 +5,10 @@ using System.Net.Sockets;
 namespace LmsDiscovery;
 
 /// <summary>
-/// Provides a wrapper around the <see cref="Socket"/> class to facilitate abstraction and testing.
+/// Provides a wrapper for the <see cref="Socket"/> class to facilitate testing.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class SocketWrapper : ISocketWrapper, IDisposable
+public class SocketWrapper : ISocket, IDisposable
 {
     private readonly Socket socket;
 
@@ -41,10 +41,7 @@ public class SocketWrapper : ISocketWrapper, IDisposable
         socket.Bind(localEP);
     }
 
-    /// <summary>
-    /// Gets the underlying raw <see cref="Socket"/> instance.
-    /// </summary>
-    /// <returns>The wrapped <see cref="Socket"/>.</returns>
+    /// <inheritdoc/>
     public Socket GetUnderlyingSocket() => socket;
 
     /// <inheritdoc/>

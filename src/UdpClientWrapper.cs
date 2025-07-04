@@ -5,13 +5,13 @@ using System.Net.Sockets;
 namespace LmsDiscovery;
 
 /// <summary>
-/// Provides a wrapper for the <see cref="UdpClient"/> class, implementing <see cref="IUdpClient"/>.
+/// Provides a wrapper for the <see cref="UdpClient"/> class to facilitate testing.
 /// </summary>
 [ExcludeFromCodeCoverage]
 public class UdpClientWrapper : IUdpClient
 {
-
     private readonly UdpClient udpClient;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="UdpClientWrapper"/> class with default settings.
     /// </summary>
@@ -20,28 +20,27 @@ public class UdpClientWrapper : IUdpClient
         udpClient = new UdpClient();
     }
 
-    /// <inheritdoc cref="UdpClient.Client"/>
-    public ISocketWrapper Client
+    /// <inheritdoc />
+    public ISocket Client
     {
         get => new SocketWrapper(udpClient.Client); // Wrap the underlying Socket in a SocketWrapper
         set => value.GetUnderlyingSocket();
     }
 
-    /// <inheritdoc cref="UdpClient.EnableBroadcast"/>
+    /// <inheritdoc />
     public bool EnableBroadcast
     {
         get => udpClient.EnableBroadcast;
         set => udpClient.EnableBroadcast = value;
     }
 
-    /// <inheritdoc cref="UdpClient.Send(byte[], int , IPEndPoint)"/>
+    /// <inheritdoc />
     public int Send(byte[] datagram, int bytes, IPEndPoint endPoint) => udpClient.Send(datagram, bytes, endPoint);
 
-
-    /// <inheritdoc cref="UdpClient.Receive(ref IPEndPoint)"/>
+    /// <inheritdoc />
     public byte[] Receive(ref IPEndPoint endPoint) => udpClient.Receive(ref endPoint);
 
-    /// <inheritdoc cref="IDisposable.Dispose"/>
+    /// <inheritdoc />
     public void Dispose()
     {
         udpClient.Dispose();

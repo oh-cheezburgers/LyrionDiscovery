@@ -1,14 +1,16 @@
 using System.Net;
+using System.Net.Sockets;
 
 namespace LmsDiscovery;
 
 /// <summary>
-/// Provides an abstraction for a UDP client wrapper with basic send and receive functionality.
+/// An abstraction of the <see cref="UdpClient"/> class to facilitate testing and abstraction.
+/// This interface allows for mocking and testing without relying on the actual network stack.
 /// </summary>
 public interface IUdpClient : IDisposable
 {
     /// <summary>
-    /// Gets or sets the underlying socket client wrapper.
+    /// Gets or sets the underlying socket used by the UDP client.
     /// </summary>
     ISocket Client { get; set; }
 
