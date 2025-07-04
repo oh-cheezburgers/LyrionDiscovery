@@ -36,11 +36,11 @@ namespace LmsDiscovery
                 var data = Encoding.UTF8.GetBytes("eIPAD\0NAME\0VERS\0UUID\0JSON\0CLIP\0");
                 udpClient.Send(data, data.Length, new IPEndPoint(IPAddress.Broadcast, port));
 
-                var from = new IPEndPoint(0, 0);
                 while (true)
                 {
                     try
                     {
+                        var from = new IPEndPoint(0, 0);
                         var recvBuffer = udpClient.Receive(ref from);
                         var response = Encoding.UTF8.GetString(recvBuffer);
                         servers.Add(response);
