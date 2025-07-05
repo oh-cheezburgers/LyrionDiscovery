@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace LmsDiscovery
 {
@@ -79,37 +78,79 @@ namespace LmsDiscovery
         }
 
         /// <summary>
-        /// Parses a server response string into a dictionary of key-value pairs.
+        /// Parses a byte array response from the Logitech Media Server discovery process into a dictionary of key-value pairs.
+        /// The response is expected to be in a specific format where each key is 4 bytes long, followed by a 4-byte length value, and then the value itself.
+        /// Keys and values are UTF-8 encoded strings.
         /// </summary>
         /// <param name="response"></param>
         /// <returns></returns>
-        public static Dictionary<string, string> Parse(string response)
+        public static Dictionary<string, string> Parse(byte[] response)
         {
-            var regex = new Regex(@"(NAME|VERS|JSON|CLIP)[\p{Cc}]|(UUID)[\$]");
-            var delimiters = new[] { "NAME", "VERS", "UUID", "JSON", "CLIP" };
-            var parts = regex.Split(response);
+            var chunks = new List<Chunk>();
 
-            var dict = new Dictionary<string, string>();
-            string? lastKey = null;
-            foreach (var part in parts)
+            for (int i = 0; i < response.Length; i++)
             {
-                if (part == "E")
+                var chunk = new Chunk
                 {
-                    continue; // Skip the initial 'E' character
-                }
-                if (delimiters.Contains(part))
+                    RawValue = response[i],
+                    Index = i
+                };
+
+                if (chunk.IsHandshakeStart)
                 {
-                    lastKey = part;
                     continue;
                 }
-                if (lastKey != null)
+
+                chunks.Add(chunk);
+            }
+
+            var keyValuePairs = new Dictionary<string, string>();
+
+            while (chunks.Any(c => !c.HasBeenParsed))
+            {
+                var (key, value) = ExtractKeyValuePair(ref chunks);
+                keyValuePairs[key] = value;
+                chunks.RemoveAll(c => c.HasBeenParsed);
+            }
+
+            return keyValuePairs;
+        }
+
+        /// <summary>
+        /// Extracts a key-value pair from the list of chunks.
+        /// The key is expected to be 4 bytes long, followed by a 4-byte length value, and then the value itself.
+        /// The method modifies the chunks list by marking the processed chunks as parsed.
+        /// </summary>
+        /// <param name="chunks"></param>
+        /// <returns></returns>
+        private static (string, string) ExtractKeyValuePair(ref List<Chunk> chunks)
+        {
+            int? valueLength = null;
+            var keyBuffer = new byte[4];
+            var valueBuffer = new List<char>();
+
+            for (int i = 0; i < chunks.Count; i++)
+            {
+                if (i < keyBuffer.Length)
                 {
-                    dict.Add(lastKey, part);
-                    lastKey = null;
+                    keyBuffer[i] = chunks[i].RawValue;
+                    chunks[i].HasBeenParsed = true;
+                }
+
+                if (i == 4)
+                {
+                    valueLength = chunks[i].LengthValue;
+                    chunks[i].HasBeenParsed = true;
+                }
+
+                if (i > 4 && i < valueLength + 5)
+                {
+                    valueBuffer.Add(chunks[i].ParsedValue);
+                    chunks[i].HasBeenParsed = true;
                 }
             }
 
-            return dict;
+            return (Encoding.UTF8.GetString(keyBuffer), new string(valueBuffer.ToArray()));
         }
     }
 }
