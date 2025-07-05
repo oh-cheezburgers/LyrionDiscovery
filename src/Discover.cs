@@ -125,9 +125,12 @@ namespace LmsDiscovery
         /// <returns></returns>
         private static (string, string) ExtractKeyValuePair(ref List<Chunk> chunks)
         {
-            int? valueLength = null;
             var keyBuffer = new byte[4];
             var valueBuffer = new List<char>();
+            var lengthChunk = chunks[4];
+            int? valueLength = lengthChunk.LengthValue;
+            lengthChunk.HasBeenParsed = true;
+            var totalLength = valueLength + keyBuffer.Length + lengthChunk.Width;
 
             for (int i = 0; i < chunks.Count; i++)
             {
@@ -137,13 +140,7 @@ namespace LmsDiscovery
                     chunks[i].HasBeenParsed = true;
                 }
 
-                if (i == 4)
-                {
-                    valueLength = chunks[i].LengthValue;
-                    chunks[i].HasBeenParsed = true;
-                }
-
-                if (i > 4 && i < valueLength + 5)
+                if (i > 4 && i < totalLength)
                 {
                     valueBuffer.Add(chunks[i].ParsedValue);
                     chunks[i].HasBeenParsed = true;

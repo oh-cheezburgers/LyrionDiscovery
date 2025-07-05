@@ -14,4 +14,6 @@ public class Chunk
     public int? Index { get; set; } = null;
 
     public bool IsHandshakeStart => ParsedValue == 'E' && Index == 0;
+
+    public int Width => 1; // Assuming each chunk is 1 byte wide
 }
