@@ -92,7 +92,7 @@ namespace LmsDiscovery
             {
                 var chunk = new Chunk
                 {
-                    RawValue = response[i],
+                    Value = response[i],
                     Index = i
                 };
 
@@ -128,7 +128,7 @@ namespace LmsDiscovery
             var keyBuffer = new byte[4];
             var valueBuffer = new List<char>();
             var lengthChunk = chunks[4];
-            int? valueLength = lengthChunk.LengthValue;
+            int? valueLength = lengthChunk.Value;
             lengthChunk.HasBeenParsed = true;
             var totalLength = valueLength + keyBuffer.Length + lengthChunk.Width;
 
@@ -136,7 +136,7 @@ namespace LmsDiscovery
             {
                 if (i < keyBuffer.Length)
                 {
-                    keyBuffer[i] = chunks[i].RawValue;
+                    keyBuffer[i] = chunks[i].Value;
                     chunks[i].HasBeenParsed = true;
                 }
 

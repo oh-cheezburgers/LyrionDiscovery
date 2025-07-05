@@ -4,10 +4,11 @@ namespace LmsDiscovery;
 
 public class Chunk
 {
-    public byte RawValue { get; set; }
-    public char ParsedValue => Encoding.ASCII.GetString([RawValue]).FirstOrDefault();
+    public byte Value { get; set; }
 
-    public int LengthValue => RawValue;
+    public char ParsedValue => Encoding.ASCII.GetString([Value]).FirstOrDefault();
+
+    public bool IsLengthValue => Index == 4;
 
     public bool HasBeenParsed { get; set; } = false;
 
@@ -15,5 +16,5 @@ public class Chunk
 
     public bool IsHandshakeStart => ParsedValue == 'E' && Index == 0;
 
-    public int Width => 1; // Assuming each chunk is 1 byte wide
+    public int Width => 1;
 }
