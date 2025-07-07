@@ -123,6 +123,7 @@ namespace LmsDiscovery
         /// The method modifies the chunks list by marking the processed chunks as parsed.
         /// </summary>
         /// <param name="chunks"></param>
+        /// <seealso href="https://github.com/LMS-Community/slimserver/blob/public/9.1/Slim/Networking/Discovery/Server.pm#L118">
         /// <returns></returns>
         private static (string, string) ExtractKeyValuePair(ref List<Chunk> chunks)
         {
