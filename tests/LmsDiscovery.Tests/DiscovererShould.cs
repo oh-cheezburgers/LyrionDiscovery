@@ -71,13 +71,13 @@ namespace LmsDiscovery.Tests
             var expected = new MediaServer
             {
                 Name = "MEDIA-SERVER",
-                Version = "9.0.2",
-                UUID = "b34f68fa-e9ae-4238-b2ce-18bb48fa26a6",
-                Json = "9000",
-                Clip = "9090"
+                Version = new Version("9.0.2"),
+                UUID = new Guid("b34f68fa-e9ae-4238-b2ce-18bb48fa26a6"),
+                Json = 9000,
+                Clip = 9090
             };
 
-            var parsedResponse = new Dictionary<string, string>
+            var parsedResponse = new Dictionary<string, dynamic>
             {
                 { "NAME", expected.Name },
                 { "VERS", expected.Version },

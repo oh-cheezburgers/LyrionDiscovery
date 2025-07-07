@@ -13,21 +13,21 @@ namespace LmsDiscovery
         /// <summary>
         /// Gets or sets the version of the server software.
         /// </summary>
-        public string? Version { get; set; }
+        public Version? Version { get; set; }
 
         /// <summary>
         /// Gets or sets the unique identifier (UUID) of the server.
         /// </summary>
-        public string? UUID { get; set; }
+        public Guid? UUID { get; set; }
 
         /// <summary>
         /// Gets or sets the JSON port used by the server.
         /// </summary>
-        public string? Json { get; set; }
+        public int? Json { get; set; }
 
         /// <summary>
         /// Gets or sets the CLI port used by the server.
         /// </summary>
-        public string? Clip { get; set; }
+        public int? Clip { get; set; }
     }
 }
