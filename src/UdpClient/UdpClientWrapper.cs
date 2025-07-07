@@ -1,6 +1,6 @@
+using LmsDiscovery.UdpClient;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using System.Net.Sockets;
 
 namespace LmsDiscovery;
 
@@ -10,14 +10,14 @@ namespace LmsDiscovery;
 [ExcludeFromCodeCoverage]
 public class UdpClientWrapper : IUdpClient
 {
-    private readonly UdpClient udpClient;
+    private readonly System.Net.Sockets.UdpClient udpClient;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UdpClientWrapper"/> class with default settings.
     /// </summary>
     public UdpClientWrapper()
     {
-        udpClient = new UdpClient();
+        udpClient = new System.Net.Sockets.UdpClient();
     }
 
     /// <inheritdoc />

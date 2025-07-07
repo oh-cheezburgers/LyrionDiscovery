@@ -1,4 +1,5 @@
 using FluentAssertions;
+using LmsDiscovery.UdpClient;
 using Moq;
 using System.Net;
 using System.Net.Sockets;

@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Sockets;
 
-namespace LmsDiscovery;
+namespace LmsDiscovery.UdpClient;
 
 /// <summary>
 /// An abstraction of the <see cref="Socket"/> class to facilitate testing and abstraction.

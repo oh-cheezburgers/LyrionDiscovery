@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using LmsDiscovery.UdpClient;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
@@ -130,7 +131,7 @@ namespace LmsDiscovery
             var lengthChunk = chunks[4];
             int? valueLength = lengthChunk.Value;
             lengthChunk.HasBeenParsed = true;
-            var totalLength = valueLength + keyBuffer.Length + lengthChunk.Width;
+            var totalLength = valueLength + keyBuffer.Length + Chunk.Width;
 
             for (int i = 0; i < chunks.Count; i++)
             {
