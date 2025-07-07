@@ -53,7 +53,10 @@ namespace LmsDiscovery.Tests
             //Arrange
             MockSend();
             MockReceive(handshake);
-            var expected = new List<string> { handshake };
+            var expected = new List<MediaServer>
+            {
+                new MediaServer()
+            };
             var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
 
             //Act

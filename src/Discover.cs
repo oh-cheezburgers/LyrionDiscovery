@@ -21,11 +21,11 @@ namespace LmsDiscovery
         /// <param name="udpClient">The UdpClient instance used for sending and receiving UDP packets.</param>
         /// <param name="port">The UDP port to use for discovery (default is 3483).</param>
         /// <returns>A list of server response strings received during discovery.</returns>
-        public static IReadOnlyList<string> Discover(CancellationToken cancellationToken, TimeSpan requestTimeout, IUdpClient udpClient, int port = 3483)
+        public static IReadOnlyList<MediaServer> Discover(CancellationToken cancellationToken, TimeSpan requestTimeout, IUdpClient udpClient, int port = 3483)
         {
             ArgumentNullException.ThrowIfNull(udpClient);
 
-            var servers = new List<string>();
+            var servers = new List<MediaServer>();
 
             using (udpClient)
             {
@@ -43,7 +43,9 @@ namespace LmsDiscovery
                         var from = new IPEndPoint(0, 0);
                         var recvBuffer = udpClient.Receive(ref from);
                         var response = Encoding.UTF8.GetString(recvBuffer);
-                        servers.Add(response);
+                        var keyValuePairs = Parse(recvBuffer);
+                        var mediaServer = Map(keyValuePairs);
+                        servers.Add(mediaServer);
                         cancellationToken.ThrowIfCancellationRequested();
                     }
                     catch (SocketException ex) when (ex.SocketErrorCode == SocketError.TimedOut)
@@ -123,7 +125,7 @@ namespace LmsDiscovery
         /// The method modifies the chunks list by marking the processed chunks as parsed.
         /// </summary>
         /// <param name="chunks"></param>
-        /// <seealso href="https://github.com/LMS-Community/slimserver/blob/public/9.1/Slim/Networking/Discovery/Server.pm#L118">
+        /// <seealso href="https://github.com/LMS-Community/slimserver/blob/public/9.1/Slim/Networking/Discovery/Server.pm#L118"/>
         /// <returns></returns>
         private static (string, dynamic) ExtractKeyValuePair(ref List<Chunk> chunks)
         {
