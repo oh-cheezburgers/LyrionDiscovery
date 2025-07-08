@@ -71,10 +71,10 @@ namespace LmsDiscovery
             var server = new MediaServer
             {
                 Name = keyValuePairs.TryGetValue("NAME", out var name) ? name : null,
-                Version = keyValuePairs.TryGetValue("VERS", out var version) ? version : null,
-                UUID = keyValuePairs.TryGetValue("UUID", out var uuid) ? uuid : null,
-                Json = keyValuePairs.TryGetValue("JSON", out var json) ? json : null,
-                Clip = keyValuePairs.TryGetValue("CLIP", out var clip) ? clip : null
+                Version = keyValuePairs.TryGetValue("VERS", out var version) ? new Version(version) : null,
+                UUID = keyValuePairs.TryGetValue("UUID", out var uuid) ? new Guid(uuid) : null,
+                Json = keyValuePairs.TryGetValue("JSON", out var json) ? int.Parse(json) : null,
+                Clip = keyValuePairs.TryGetValue("CLIP", out var clip) ? int.Parse(clip) : null
             };
 
             return server;
@@ -125,7 +125,7 @@ namespace LmsDiscovery
         /// The method modifies the chunks list by marking the processed chunks as parsed.
         /// </summary>
         /// <param name="chunks"></param>
-        /// <seealso href="https://github.com/LMS-Community/slimserver/blob/public/9.1/Slim/Networking/Discovery/Server.pm#L118"/>
+        /// <seealso href="https://github.com/LMS-Community/slimserver/blob/public/9.1/Slim/Networking/Discovery/Server.pm#L188"/>
         /// <returns></returns>
         private static (string, dynamic) ExtractKeyValuePair(ref List<Chunk> chunks)
         {
