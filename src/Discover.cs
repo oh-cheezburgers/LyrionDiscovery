@@ -111,7 +111,7 @@ namespace LmsDiscovery
 
             while (chunks.Any(c => !c.HasBeenParsed))
             {
-                var (key, value) = ExtractKeyValuePair(ref chunks);
+                var (key, value) = ExtractKeyValuePair(chunks);
                 keyValuePairs[key] = value;
                 chunks.RemoveAll(c => c.HasBeenParsed);
             }
@@ -127,7 +127,7 @@ namespace LmsDiscovery
         /// <param name="chunks"></param>
         /// <seealso href="https://github.com/LMS-Community/slimserver/blob/public/9.1/Slim/Networking/Discovery/Server.pm#L188"/>
         /// <returns></returns>
-        private static (string, string) ExtractKeyValuePair(ref List<Chunk> chunks)
+        private static (string, string) ExtractKeyValuePair(List<Chunk> chunks)
         {
             var keyBuffer = new byte[4];
             var valueBuffer = new List<char>();
