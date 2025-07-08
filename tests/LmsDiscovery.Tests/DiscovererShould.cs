@@ -80,13 +80,13 @@ namespace LmsDiscovery.Tests
                 Clip = 9090
             };
 
-            var parsedResponse = new Dictionary<string, dynamic>
+            var parsedResponse = new Dictionary<string, string>
             {
                 { "NAME", expected.Name },
-                { "VERS", expected.Version },
-                { "UUID", expected.UUID },
-                { "JSON", expected.Json },
-                { "CLIP", expected.Clip }
+                { "VERS", expected.Version.ToString() },
+                { "UUID", expected.UUID.ToString()! },
+                { "JSON", expected.Json.ToString()! },
+                { "CLIP", expected.Clip.ToString()! }
             };
 
             //Act

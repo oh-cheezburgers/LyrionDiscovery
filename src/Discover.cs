@@ -66,7 +66,7 @@ namespace LmsDiscovery
         /// Maps a dictionary of key-value pairs to a <see cref="MediaServer"/> object.
         /// </summary>
         /// <returns>A <see cref="MediaServer"/> object populated with data extracted from the response string.</returns>
-        public static MediaServer Map(IDictionary<string, dynamic> keyValuePairs)
+        public static MediaServer Map(IDictionary<string, string> keyValuePairs)
         {
             var server = new MediaServer
             {
@@ -87,7 +87,7 @@ namespace LmsDiscovery
         /// </summary>
         /// <param name="response"></param>
         /// <returns></returns>
-        public static Dictionary<string, dynamic> Parse(byte[] response)
+        public static Dictionary<string, string> Parse(byte[] response)
         {
             var chunks = new List<Chunk>();
 
@@ -107,7 +107,7 @@ namespace LmsDiscovery
                 chunks.Add(chunk);
             }
 
-            var keyValuePairs = new Dictionary<string, dynamic>();
+            var keyValuePairs = new Dictionary<string, string>();
 
             while (chunks.Any(c => !c.HasBeenParsed))
             {
@@ -127,7 +127,7 @@ namespace LmsDiscovery
         /// <param name="chunks"></param>
         /// <seealso href="https://github.com/LMS-Community/slimserver/blob/public/9.1/Slim/Networking/Discovery/Server.pm#L188"/>
         /// <returns></returns>
-        private static (string, dynamic) ExtractKeyValuePair(ref List<Chunk> chunks)
+        private static (string, string) ExtractKeyValuePair(ref List<Chunk> chunks)
         {
             var keyBuffer = new byte[4];
             var valueBuffer = new List<char>();
