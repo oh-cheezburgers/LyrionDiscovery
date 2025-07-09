@@ -51,19 +51,25 @@ namespace LmsDiscovery.Tests
         public void Discover()
         {
             //Arrange
+            var discoveryPacket = "ENAME\fMEDIA-SERVERVERS\u00059.0.2UUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6JSON\u00049000CLIP\u00049090";
             MockSend();
-            MockReceive(handshake);
-            var expected = new List<MediaServer>
+            MockReceive(discoveryPacket);
+            var expected = new MediaServer
             {
-                new MediaServer()
+                Name = "MEDIA-SERVER",
+                Version = new Version("9.0.2"),
+                UUID = new Guid("b34f68fa-e9ae-4238-b2ce-18bb48fa26a6"),
+                Json = 9000,
+                Clip = 9090
             };
+
             var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
 
             //Act
             var response = Discovery.Discover(cancellationToken, TimeSpan.FromSeconds(1), udpClientMock.Object);
 
             //Assert
-            response.Should().BeEquivalentTo(expected);
+            response.Should().ContainEquivalentOf(expected);
             udpClientMock.Verify(m => m.Dispose(), Times.Once);
         }
 
