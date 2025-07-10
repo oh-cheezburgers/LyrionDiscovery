@@ -67,7 +67,7 @@ namespace LmsDiscovery
         /// Maps a dictionary of key-value pairs to a <see cref="MediaServer"/> object.
         /// </summary>
         /// <returns>A <see cref="MediaServer"/> object populated with data extracted from the response string.</returns>
-        public static MediaServer Map(IDictionary<string, string> keyValuePairs)
+        private static MediaServer Map(IDictionary<string, string> keyValuePairs)
         {
             var server = new MediaServer
             {
@@ -88,7 +88,7 @@ namespace LmsDiscovery
         /// </summary>
         /// <param name="response"></param>
         /// <returns></returns>
-        public static Dictionary<string, string> Parse(byte[] response)
+        private static Dictionary<string, string> Parse(byte[] response)
         {
             var chunks = new List<Chunk>();
 
