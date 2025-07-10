@@ -1,3 +1,5 @@
+using System.Net;
+
 namespace LmsDiscovery
 {
     /// <summary>
@@ -29,5 +31,10 @@ namespace LmsDiscovery
         /// Gets or sets the CLI port used by the server.
         /// </summary>
         public int? Clip { get; set; }
+
+        /// <summary>
+        /// Gets or sets the IP address of the server.
+        /// </summary>
+        public IPAddress? IPAddress { get; set; }
     }
 }

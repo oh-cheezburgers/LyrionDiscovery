@@ -60,7 +60,8 @@ namespace LmsDiscovery.Tests
                 Version = new Version("9.0.2"),
                 UUID = new Guid("b34f68fa-e9ae-4238-b2ce-18bb48fa26a6"),
                 Json = 9000,
-                Clip = 9090
+                Clip = 9090,
+                IPAddress = IPAddress.Parse("107.70.178.215")
             };
 
             var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;

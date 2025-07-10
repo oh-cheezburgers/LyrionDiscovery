@@ -45,6 +45,7 @@ namespace LmsDiscovery
                         var response = Encoding.UTF8.GetString(recvBuffer);
                         var keyValuePairs = Parse(recvBuffer);
                         var mediaServer = Map(keyValuePairs);
+                        mediaServer.IPAddress = from.Address;
                         servers.Add(mediaServer);
                         cancellationToken.ThrowIfCancellationRequested();
                     }
