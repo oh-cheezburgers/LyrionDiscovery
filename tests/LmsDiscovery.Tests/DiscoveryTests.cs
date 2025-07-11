@@ -23,14 +23,15 @@ namespace LmsDiscovery.Tests
 
         private void MockSend()
         {
-            udpClientMock.Setup(m => m.Send(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<IPEndPoint>()))
-                         .Returns(1);
+            udpClientMock.Setup(m => m.Send(Encoding.UTF8.GetBytes(handshake), Encoding.UTF8.GetBytes(handshake).Length, It.IsAny<IPEndPoint>()))
+                         .Returns(Encoding.UTF8.GetBytes(handshake).Length);
         }
 
-        private void MockReceive(string handshake)
+        [Fact]
+        public void Discover_WhenValidResponseReceived_ReturnsDiscoveredServers()
         {
+            //Arrange
             int callCount = 0;
-
             udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
                 .Returns((ref IPEndPoint ep) =>
                 {
@@ -38,22 +39,13 @@ namespace LmsDiscovery.Tests
                     {
                         callCount++;
                         ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
-                        return Encoding.UTF8.GetBytes(handshake);
+                        return Encoding.UTF8.GetBytes("ENAME\fMEDIA-SERVERVERS\u00059.0.2UUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6JSON\u00049000CLIP\u00049090");
                     }
                     else
                     {
                         throw new OperationCanceledException();
                     }
                 });
-        }
-
-        [Fact]
-        public void Discover_WhenValidResponseReceived_ReturnsDiscoveredServers()
-        {
-            //Arrange
-            var discoveryPacket = "ENAME\fMEDIA-SERVERVERS\u00059.0.2UUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6JSON\u00049000CLIP\u00049090";
-            MockSend();
-            MockReceive(discoveryPacket);
             var expected = new MediaServer
             {
                 Name = "MEDIA-SERVER",
