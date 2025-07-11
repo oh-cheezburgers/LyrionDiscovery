@@ -7,12 +7,12 @@ using System.Text;
 
 namespace LmsDiscovery.Tests
 {
-    public class DiscoveryShould
+    public class DiscoveryTests
     {
         private Mock<IUdpClient> udpClientMock;
         private const string handshake = "eIPAD\0NAME\0VERS\0UUID\0JSON\0CLIP\0";
 
-        public DiscoveryShould()
+        public DiscoveryTests()
         {
             var socketMock = new Mock<ISocket>();
             udpClientMock = new Mock<IUdpClient>();
@@ -48,7 +48,7 @@ namespace LmsDiscovery.Tests
         }
 
         [Fact]
-        public void Discover()
+        public void Discover_WhenValidResponseReceived_ReturnsDiscoveredServers()
         {
             //Arrange
             var discoveryPacket = "ENAME\fMEDIA-SERVERVERS\u00059.0.2UUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6JSON\u00049000CLIP\u00049090";
@@ -75,14 +75,14 @@ namespace LmsDiscovery.Tests
         }
 
         [Fact]
-        public void HandleRequestTimeout()
+        public void Discover_RequestTimeoutExceeded_ReturnsEmptyList()
         {
             // Arrange
             MockSend();
             udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
                          .Throws(new SocketException((int)SocketError.TimedOut));
             var expected = new List<string> { handshake };
-            var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
+            var cancellationToken = new CancellationTokenSource().Token;
 
             //Act
             var response = Discovery.Discover(cancellationToken, TimeSpan.FromSeconds(1), udpClientMock.Object);
