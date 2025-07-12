@@ -43,6 +43,10 @@ namespace LmsDiscovery
                         var from = new IPEndPoint(0, 0);
                         var recvBuffer = udpClient.Receive(ref from);
                         var response = Encoding.UTF8.GetString(recvBuffer);
+                        if (response == "eIPAD\0NAME\0VERS\0UUID\0JSON\0CLIP\0")
+                        {
+                            continue;
+                        }
                         var keyValuePairs = Parse(recvBuffer);
                         var mediaServer = Map(keyValuePairs);
                         mediaServer.IPAddress = from.Address;
