@@ -40,6 +40,7 @@ namespace LmsDiscovery
                 {
                     try
                     {
+                        cancellationToken.ThrowIfCancellationRequested();
                         var from = new IPEndPoint(0, 0);
                         var recvBuffer = udpClient.Receive(ref from);
                         var response = Encoding.UTF8.GetString(recvBuffer);
@@ -51,7 +52,6 @@ namespace LmsDiscovery
                         var mediaServer = Map(keyValuePairs);
                         mediaServer.IPAddress = from.Address;
                         servers.Add(mediaServer);
-                        cancellationToken.ThrowIfCancellationRequested();
                     }
                     catch (SocketException ex) when (ex.SocketErrorCode == SocketError.TimedOut)
                     {

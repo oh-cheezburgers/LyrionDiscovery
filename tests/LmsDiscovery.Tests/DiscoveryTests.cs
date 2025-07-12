@@ -215,18 +215,18 @@ namespace LmsDiscovery.Tests
         {
             // Arrange
             MockSend();
+            var cancellationToken = new CancellationTokenSource();
             udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
                 .Returns((ref IPEndPoint ep) =>
                 {
-                    Task.Delay(2000);
+                    cancellationToken.Cancel();
                     ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
                     return Encoding.UTF8.GetBytes(discoveryPacket);
 
                 });
-            var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
 
             //Act
-            var response = Discovery.Discover(cancellationToken, TimeSpan.MaxValue, udpClientMock.Object);
+            var response = Discovery.Discover(cancellationToken.Token, TimeSpan.MaxValue, udpClientMock.Object);
 
             //Assert
             response.Should().BeEmpty();
