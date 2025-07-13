@@ -231,5 +231,153 @@ namespace LmsDiscovery.Tests
             //Assert
             response.Should().BeEmpty();
         }
+
+        [Fact]
+        public void Discover_InValidResponsesReceived_ReturnsDiscoveredServer()
+        {
+            //Arrange
+            int callCount = 0;
+            udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
+                .Returns((ref IPEndPoint ep) =>
+                {
+                    if (callCount == 0)
+                    {
+                        callCount++;
+                        ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
+                        return Encoding.UTF8.GetBytes("ENAME\fMEDIA-SERVERVERS\u00059.0.2UUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6JSON\u00049000CLIP\u00049090");
+                    }
+                    if (callCount == 1)
+                    {
+                        callCount++;
+                        ep = new IPEndPoint(IPAddress.Parse("230.186.191.21"), 3483);
+                        return Encoding.UTF8.GetBytes("InvalidResponseString");
+                    }
+                    else
+                    {
+                        throw new OperationCanceledException();
+                    }
+                });
+            var servers = new List<MediaServer>()
+            {
+                new MediaServer
+                {
+                    Name = "MEDIA-SERVER",
+                    Version = new Version("9.0.2"),
+                    UUID = new Guid("b34f68fa-e9ae-4238-b2ce-18bb48fa26a6"),
+                    Json = 9000,
+                    Clip = 9090,
+                    IPAddress = IPAddress.Parse("107.70.178.215")
+                },
+            };
+
+            var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
+
+            //Act
+            var response = Discovery.Discover(cancellationToken, TimeSpan.FromSeconds(1), udpClientMock.Object);
+
+            //Assert
+            response.Should().BeEquivalentTo(servers);
+        }
+
+        [Fact]
+        public void Discover_ResponseInDifferentOrder_ReturnsDiscoveredServer()
+        {
+            //Arrange            
+            udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
+                .Returns((ref IPEndPoint ep) =>
+                {
+                    return Encoding.UTF8.GetBytes("EJSON\u00049000CLIP\u00049090NAME\fMEDIA-SERVERUUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6VERS\u00059.0.2");
+                });
+            var servers = new List<MediaServer>()
+            {
+                new MediaServer
+                {
+                    Name = "MEDIA-SERVER",
+                    Version = new Version("9.0.2"),
+                    UUID = new Guid("b34f68fa-e9ae-4238-b2ce-18bb48fa26a6"),
+                    Json = 9000,
+                    Clip = 9090,
+                    IPAddress = IPAddress.Parse("107.70.178.215")
+                },
+            };
+
+            var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
+
+            //Act
+            var response = Discovery.Discover(cancellationToken, TimeSpan.FromSeconds(1), udpClientMock.Object);
+
+            //Assert
+            response.Should().BeEquivalentTo(servers);
+        }
+
+        [Fact]
+        public void Discover_ResponseMissingKeyValuePair_ReturnsDiscoveredServer()
+        {
+            //Arrange
+            MockSend();
+            int callCount = 0;
+            udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
+                .Returns((ref IPEndPoint ep) =>
+                {
+                    if (callCount == 0)
+                    {
+                        callCount++;
+                        ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
+                        return Encoding.UTF8.GetBytes("EJSON\u00049000CLIP\u00049090NAME\fMEDIA-SERVERVERS\u00059.0.2");
+                    }
+                    else
+                    {
+                        throw new SocketException((int)SocketError.TimedOut);
+                    }
+                });
+            var servers = new List<MediaServer>()
+            {
+                new MediaServer
+                {
+                    Name = "MEDIA-SERVER",
+                    Version = new Version("9.0.2"),
+                    Json = 9000,
+                    Clip = 9090,
+                    IPAddress = IPAddress.Parse("107.70.178.215")
+                },
+            };
+
+            var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
+
+            //Act
+            var response = Discovery.Discover(cancellationToken, TimeSpan.FromSeconds(1), udpClientMock.Object);
+
+            //Assert
+            response.Should().BeEquivalentTo(servers);
+        }
+
+        [Fact]
+        public void Discover_EmptyResponseReceived_ReturnsEmptyResponse()
+        {
+            //Arrange
+            MockSend();
+            int callCount = 0;
+            udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
+                .Returns((ref IPEndPoint ep) =>
+                {
+                    if (callCount == 0)
+                    {
+                        callCount++;
+                        return Encoding.UTF8.GetBytes(string.Empty);
+                    }
+                    else
+                    {
+                        throw new SocketException((int)SocketError.TimedOut);
+                    }
+                });
+
+            var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
+
+            //Act
+            var response = Discovery.Discover(cancellationToken, TimeSpan.FromSeconds(1), udpClientMock.Object);
+
+            //Assert
+            response.Should().BeEmpty();
+        }
     }
 }
