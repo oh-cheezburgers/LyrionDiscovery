@@ -52,16 +52,13 @@ namespace LmsDiscovery
                         {
                             continue;
                         }
-                        try
+                        Dictionary<string, string> keyValuePairs;
+                        var parsed = TryParse(recvBuffer, out keyValuePairs);
+                        if (parsed)
                         {
-                            var keyValuePairs = Parse(recvBuffer);
                             var mediaServer = Map(keyValuePairs);
                             mediaServer.IPAddress = from.Address;
                             servers.Add(mediaServer);
-                        }
-                        catch (FormatException)
-                        {
-
                         }
                     }
                     catch (SocketException ex) when (ex.SocketErrorCode == SocketError.TimedOut)
@@ -138,6 +135,37 @@ namespace LmsDiscovery
             }
 
             return keyValuePairs;
+        }
+
+        /// <summary>
+        /// Attempts to parse a byte array response from a Logitech Media Server discovery packet into a dictionary of key-value pairs.
+        /// </summary>
+        /// <param name="response">The byte array containing the raw discovery response packet from the server.</param>
+        /// <param name="result">When this method returns, contains the parsed key-value pairs if parsing was successful; otherwise, an empty dictionary.</param>
+        /// <returns>
+        /// <c>true</c> if the response was successfully parsed and contains at least one key-value pair; 
+        /// <c>false</c> if parsing failed due to invalid format or if no key-value pairs were found.
+        /// </returns>
+        /// <remarks>
+        /// This method provides a safe way to parse discovery responses without throwing exceptions.
+        /// It uses the internal <see cref="Parse(byte[])"/> method to perform the actual parsing,
+        /// catching any exceptions that may occur due to malformed packets or unexpected data formats.
+        /// The method only returns <c>true</c> if parsing succeeds and at least one key-value pair is extracted,
+        /// ensuring that the result contains meaningful data.
+        /// </remarks>
+        private static bool TryParse(byte[] response, out Dictionary<string, string> result)
+        {
+            result = new Dictionary<string, string>();
+            try
+            {
+                result = Parse(response);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return result.Any();
         }
 
         /// <summary>
