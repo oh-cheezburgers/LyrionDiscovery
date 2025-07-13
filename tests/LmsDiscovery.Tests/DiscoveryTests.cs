@@ -282,11 +282,22 @@ namespace LmsDiscovery.Tests
         [Fact]
         public void Discover_ResponseInDifferentOrder_ReturnsDiscoveredServer()
         {
-            //Arrange            
+            //Arrange
+            MockSend();
+            int callCount = 0;
             udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
                 .Returns((ref IPEndPoint ep) =>
                 {
-                    return Encoding.UTF8.GetBytes("EJSON\u00049000CLIP\u00049090NAME\fMEDIA-SERVERUUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6VERS\u00059.0.2");
+                    if (callCount == 0)
+                    {
+                        callCount++;
+                        ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
+                        return Encoding.UTF8.GetBytes("EJSON\u00049000CLIP\u00049090NAME\fMEDIA-SERVERUUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6VERS\u00059.0.2");
+                    }
+                    else
+                    {
+                        throw new SocketException((int)SocketError.TimedOut);
+                    }
                 });
             var servers = new List<MediaServer>()
             {
