@@ -165,7 +165,12 @@ namespace LmsDiscovery
                 return false;
             }
 
-            return result.Any();
+            var keys = new List<string> { "NAME", "VERS", "UUID", "JSON", "CLIP" };
+
+            var localKeys = result.Keys.ToList();
+            var hasKeys = keys.All(k => localKeys.Contains(k));
+
+            return hasKeys;
         }
 
         /// <summary>
