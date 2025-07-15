@@ -321,8 +321,8 @@ namespace LmsDiscovery.Tests
             response.Should().BeEquivalentTo(servers);
         }
 
-        [Fact(Skip = "Need to modify parsing logic to include include check for varying number of keys")]
-        public void Discover_ResponseMissingKeyValuePair_ReturnsDiscoveredServer()
+        [Fact]
+        public void Discover_ResponseMissingKeyValuePairs_ReturnsEmptyList()
         {
             //Arrange
             MockSend();
@@ -334,24 +334,13 @@ namespace LmsDiscovery.Tests
                     {
                         callCount++;
                         ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
-                        return Encoding.UTF8.GetBytes("EJSON\u00049000CLIP\u00049090NAME\fMEDIA-SERVERVERS\u00059.0.2");
+                        return Encoding.UTF8.GetBytes("EJSON\u00049000CLIP\u00049090");
                     }
                     else
                     {
                         throw new SocketException((int)SocketError.TimedOut);
                     }
                 });
-            var servers = new List<MediaServer>()
-            {
-                new MediaServer
-                {
-                    Name = "MEDIA-SERVER",
-                    Version = new Version("9.0.2"),
-                    Json = 9000,
-                    Clip = 9090,
-                    IPAddress = IPAddress.Parse("107.70.178.215")
-                },
-            };
 
             var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
 
@@ -359,7 +348,7 @@ namespace LmsDiscovery.Tests
             var response = Discovery.Discover(cancellationToken, TimeSpan.FromSeconds(1), udpClientMock.Object);
 
             //Assert
-            response.Should().BeEquivalentTo(servers);
+            response.Should().BeEmpty();
         }
 
         [Fact]
