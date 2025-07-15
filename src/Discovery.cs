@@ -21,11 +21,11 @@ namespace LmsDiscovery
         /// <param name="udpClient">The UdpClient instance used for sending and receiving UDP packets.</param>
         /// <param name="port">The UDP port to use for discovery (default is 3483).</param>
         /// <returns>A list of server response strings received during discovery.</returns>
-        public static IReadOnlyList<MediaServer> Discover(CancellationToken cancellationToken, TimeSpan requestTimeout, IUdpClient udpClient, int port = 3483)
+        public static IReadOnlyCollection<MediaServer> Discover(CancellationToken cancellationToken, TimeSpan requestTimeout, IUdpClient udpClient, int port = 3483)
         {
             ArgumentNullException.ThrowIfNull(udpClient);
 
-            var servers = new List<MediaServer>();
+            var servers = new HashSet<MediaServer>();
 
             using (udpClient)
             {
@@ -83,15 +83,16 @@ namespace LmsDiscovery
         {
             var server = new MediaServer
             {
-                Name = keyValuePairs.TryGetValue("NAME", out var name) ? name : null,
-                Version = keyValuePairs.TryGetValue("VERS", out var version) ? new Version(version) : null,
-                UUID = keyValuePairs.TryGetValue("UUID", out var uuid) ? new Guid(uuid) : null,
-                Json = keyValuePairs.TryGetValue("JSON", out var json) ? int.Parse(json) : null,
-                Clip = keyValuePairs.TryGetValue("CLIP", out var clip) ? int.Parse(clip) : null
+                Name = keyValuePairs.TryGetValue("NAME", out var name) && !string.IsNullOrWhiteSpace(name) ? name : null,
+                Version = keyValuePairs.TryGetValue("VERS", out var version) && !string.IsNullOrWhiteSpace(version) ? new Version(version) : null,
+                UUID = keyValuePairs.TryGetValue("UUID", out var uuid) && !string.IsNullOrWhiteSpace(uuid) ? new Guid(uuid) : null,
+                Json = keyValuePairs.TryGetValue("JSON", out var json) && !string.IsNullOrWhiteSpace(json) ? int.Parse(json) : (int?)null,
+                Clip = keyValuePairs.TryGetValue("CLIP", out var clip) && !string.IsNullOrWhiteSpace(clip) ? int.Parse(clip) : (int?)null
             };
 
             return server;
         }
+
 
         /// <summary>
         /// Parses a byte array response from the Logitech Media Server discovery process into a dictionary of key-value pairs.

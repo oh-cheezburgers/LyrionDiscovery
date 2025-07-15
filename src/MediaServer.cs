@@ -36,5 +36,22 @@ namespace LmsDiscovery
         /// Gets or sets the IP address of the server.
         /// </summary>
         public IPAddress? IPAddress { get; set; }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is not MediaServer other) return false;
+
+            return IPAddress?.Equals(other.IPAddress) == true &&
+                   Name == other.Name &&
+                   Version?.Equals(other.Version) == true &&
+                   UUID?.Equals(other.UUID) == true &&
+                   Json == other.Json &&
+                   Clip == other.Clip;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(IPAddress, Name, Version, UUID, Json, Clip);
+        }
     }
 }
