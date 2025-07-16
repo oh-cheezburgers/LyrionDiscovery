@@ -10,7 +10,7 @@ namespace LmsDiscovery.Tests
     public class DiscoveryTests
     {
         private Mock<IUdpClient> udpClientMock;
-        private const string discoveryPacket = "eIPAD\0NAME\0VERS\0UUID\0JSON\0CLIP\0";
+        private const string discoveryPacket = "EIPAD\0NAME\0VERS\0UUID\0JSON\0CLIP\0";
 
         public DiscoveryTests()
         {

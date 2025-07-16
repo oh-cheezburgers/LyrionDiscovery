@@ -15,7 +15,7 @@ namespace LmsDiscovery
     {
         private static IReadOnlyCollection<string> discoveryPacketKeys = ["NAME", "VERS", "UUID", "JSON", "CLIP"];
 
-        private static string discoveryPacket { get => $"{"e"}{"IPAD"}{"\0"}{string.Join("\0", discoveryPacketKeys)}{"\0"}"; }
+        private static string discoveryPacket { get => $"{"EIPAD\0"}{string.Join("\0", discoveryPacketKeys)}{"\0"}"; }
 
         /// <summary>
         /// Discovers Logitech Media Servers within the specified timeout using the provided UdpClient.
@@ -53,7 +53,7 @@ namespace LmsDiscovery
                         {
                             continue;
                         }
-                        if (response == "eIPAD\0NAME\0VERS\0UUID\0JSON\0CLIP\0")
+                        if (response == discoveryPacket)
                         {
                             continue;
                         }
@@ -171,10 +171,8 @@ namespace LmsDiscovery
                 return false;
             }
 
-            var keys = new List<string> { "NAME", "VERS", "UUID", "JSON", "CLIP" };
-
             var localKeys = result.Keys.ToList();
-            var hasKeys = keys.All(k => localKeys.Contains(k));
+            var hasKeys = discoveryPacketKeys.All(k => localKeys.Contains(k));
 
             return hasKeys;
         }
