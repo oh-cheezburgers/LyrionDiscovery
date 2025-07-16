@@ -13,6 +13,10 @@ namespace LmsDiscovery
     /// </summary>
     public static class Discovery
     {
+        private static IReadOnlyCollection<string> discoveryPacketKeys = ["NAME", "VERS", "UUID", "JSON", "CLIP"];
+
+        private static string discoveryPacket { get => $"{"e"}{"IPAD"}{"\0"}{string.Join("\0", discoveryPacketKeys)}{"\0"}"; }
+
         /// <summary>
         /// Discovers Logitech Media Servers within the specified timeout using the provided UdpClient.
         /// </summary>
@@ -23,6 +27,7 @@ namespace LmsDiscovery
         /// <returns>A list of server response strings received during discovery.</returns>
         public static IReadOnlyCollection<MediaServer> Discover(CancellationToken cancellationToken, TimeSpan requestTimeout, IUdpClient udpClient, int port = 3483)
         {
+            var joined = discoveryPacket;
             ArgumentNullException.ThrowIfNull(udpClient);
 
             var servers = new HashSet<MediaServer>();
@@ -33,7 +38,7 @@ namespace LmsDiscovery
                 udpClient.EnableBroadcast = true;
                 udpClient.Client.ReceiveTimeout = (int)requestTimeout.TotalMilliseconds;
 
-                var data = Encoding.UTF8.GetBytes("eIPAD\0NAME\0VERS\0UUID\0JSON\0CLIP\0");
+                var data = Encoding.UTF8.GetBytes(discoveryPacket);
                 udpClient.Send(data, data.Length, new IPEndPoint(IPAddress.Broadcast, port));
 
                 while (true)

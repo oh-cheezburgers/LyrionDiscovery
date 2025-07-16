@@ -15,8 +15,8 @@ namespace LmsDiscovery.Tests
         public DiscoveryTests()
         {
             var socketMock = new Mock<ISocket>();
-            udpClientMock = new Mock<IUdpClient>();
-            socketMock.Setup(m => m.EnableBroadcast).Returns(true);
+            udpClientMock = new Mock<IUdpClient>(MockBehavior.Strict);
+            udpClientMock.SetupProperty(m => m.EnableBroadcast);
             udpClientMock.Setup(m => m.Client.ReceiveTimeout).Returns(1000);
             udpClientMock.Setup(m => m.Client).Returns(socketMock.Object);
         }
@@ -25,6 +25,8 @@ namespace LmsDiscovery.Tests
         {
             udpClientMock.Setup(m => m.Send(Encoding.UTF8.GetBytes(discoveryPacket), Encoding.UTF8.GetBytes(discoveryPacket).Length, It.IsAny<IPEndPoint>()))
                          .Returns(Encoding.UTF8.GetBytes(discoveryPacket).Length);
+
+            udpClientMock.Setup(m => m.Dispose());
         }
 
         [Fact]
@@ -70,6 +72,7 @@ namespace LmsDiscovery.Tests
         public void Discover_ReceivesDiscoveryPacket_ReturnsEmptyList()
         {
             // Arrange
+            MockSend();
             int callCount = 0;
             udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
                 .Returns((ref IPEndPoint ep) =>
@@ -106,6 +109,7 @@ namespace LmsDiscovery.Tests
         public void Discover_ValidResponsesReceived_ReturnsDiscoveredServers()
         {
             //Arrange
+            MockSend();
             int callCount = 0;
             udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
                 .Returns((ref IPEndPoint ep) =>
@@ -236,6 +240,7 @@ namespace LmsDiscovery.Tests
         public void Discover_InValidResponsesReceived_ReturnsDiscoveredServer()
         {
             //Arrange
+            MockSend();
             int callCount = 0;
             udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
                 .Returns((ref IPEndPoint ep) =>
