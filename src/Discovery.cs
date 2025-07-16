@@ -27,7 +27,6 @@ namespace LmsDiscovery
         /// <returns>A list of server response strings received during discovery.</returns>
         public static IReadOnlyCollection<MediaServer> Discover(CancellationToken cancellationToken, TimeSpan requestTimeout, IUdpClient udpClient, int port = 3483)
         {
-            var joined = discoveryPacket;
             ArgumentNullException.ThrowIfNull(udpClient);
 
             var servers = new HashSet<MediaServer>();
