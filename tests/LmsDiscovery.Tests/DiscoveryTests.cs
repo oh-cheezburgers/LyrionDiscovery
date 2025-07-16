@@ -40,25 +40,44 @@ namespace LmsDiscovery.Tests
                 });
         }
 
+        private MockReceiveDelegate CreateMockReceiveDelegate(string ip, int port, string response)
+        {
+            int callCount = 0;
+
+            return (ref IPEndPoint ep) =>
+            {
+                if (callCount++ == 0)
+                {
+                    ep = new IPEndPoint(IPAddress.Parse(ip), port);
+                    return Encoding.UTF8.GetBytes(response);
+                }
+
+                throw new OperationCanceledException();
+            };
+        }
+
+        private MockReceiveDelegate CreateMockReceiveDelegate()
+        {
+            int callCount = 0;
+            return (ref IPEndPoint ep) =>
+            {
+                if (++callCount == 1)
+                {
+                    ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
+                    return Encoding.UTF8.GetBytes("ENAME\fMEDIA-SERVERVERS\u00059.0.2UUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6JSON\u00049000CLIP\u00049090");
+                }
+
+                throw new OperationCanceledException();
+            };
+        }
+
         [Fact]
         public void Discover_ValidResponseReceived_ReturnsDiscoveredServer()
         {
             //Arrange
             MockSend();
-            int callCount = 0;
-            MockReceive((ref IPEndPoint ep) =>
-            {
-                if (callCount == 0)
-                {
-                    callCount++;
-                    ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
-                    return Encoding.UTF8.GetBytes("ENAME\fMEDIA-SERVERVERS\u00059.0.2UUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6JSON\u00049000CLIP\u00049090");
-                }
-                else
-                {
-                    throw new OperationCanceledException();
-                }
-            });
+            MockReceive(CreateMockReceiveDelegate());
+
             var expected = new MediaServer
             {
                 Name = "MEDIA-SERVER",
