@@ -29,26 +29,36 @@ namespace LmsDiscovery.Tests
             udpClientMock.Setup(m => m.Dispose());
         }
 
+        private delegate byte[] MockReceiveDelegate(ref IPEndPoint endPoint);
+
+        private void MockReceive(MockReceiveDelegate mockReceiveDelegate)
+        {
+            udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
+                .Returns((ref IPEndPoint endPoint) =>
+                {
+                    return mockReceiveDelegate(ref endPoint);
+                });
+        }
+
         [Fact]
         public void Discover_ValidResponseReceived_ReturnsDiscoveredServer()
         {
             //Arrange
             MockSend();
             int callCount = 0;
-            udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
-                .Returns((ref IPEndPoint ep) =>
+            MockReceive((ref IPEndPoint ep) =>
+            {
+                if (callCount == 0)
                 {
-                    if (callCount == 0)
-                    {
-                        callCount++;
-                        ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
-                        return Encoding.UTF8.GetBytes("ENAME\fMEDIA-SERVERVERS\u00059.0.2UUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6JSON\u00049000CLIP\u00049090");
-                    }
-                    else
-                    {
-                        throw new OperationCanceledException();
-                    }
-                });
+                    callCount++;
+                    ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
+                    return Encoding.UTF8.GetBytes("ENAME\fMEDIA-SERVERVERS\u00059.0.2UUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6JSON\u00049000CLIP\u00049090");
+                }
+                else
+                {
+                    throw new OperationCanceledException();
+                }
+            });
             var expected = new MediaServer
             {
                 Name = "MEDIA-SERVER",
@@ -74,26 +84,25 @@ namespace LmsDiscovery.Tests
             // Arrange
             MockSend();
             int callCount = 0;
-            udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
-                .Returns((ref IPEndPoint ep) =>
+            MockReceive((ref IPEndPoint ep) =>
+            {
+                if (callCount == 0)
                 {
-                    if (callCount == 0)
-                    {
-                        callCount++;
-                        ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
-                        return Encoding.UTF8.GetBytes(discoveryPacket);
-                    }
-                    if (callCount == 1)
-                    {
-                        callCount++;
-                        ep = new IPEndPoint(IPAddress.Parse("230.186.191.21"), 3483);
-                        return Encoding.UTF8.GetBytes(discoveryPacket);
-                    }
-                    else
-                    {
-                        throw new OperationCanceledException();
-                    }
-                });
+                    callCount++;
+                    ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
+                    return Encoding.UTF8.GetBytes(discoveryPacket);
+                }
+                if (callCount == 1)
+                {
+                    callCount++;
+                    ep = new IPEndPoint(IPAddress.Parse("230.186.191.21"), 3483);
+                    return Encoding.UTF8.GetBytes(discoveryPacket);
+                }
+                else
+                {
+                    throw new OperationCanceledException();
+                }
+            });
 
             var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
 
@@ -111,26 +120,25 @@ namespace LmsDiscovery.Tests
             //Arrange
             MockSend();
             int callCount = 0;
-            udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
-                .Returns((ref IPEndPoint ep) =>
+            MockReceive((ref IPEndPoint ep) =>
+            {
+                if (callCount == 0)
                 {
-                    if (callCount == 0)
-                    {
-                        callCount++;
-                        ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
-                        return Encoding.UTF8.GetBytes("ENAME\fMEDIA-SERVERVERS\u00059.0.2UUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6JSON\u00049000CLIP\u00049090");
-                    }
-                    if (callCount == 1)
-                    {
-                        callCount++;
-                        ep = new IPEndPoint(IPAddress.Parse("230.186.191.21"), 3483);
-                        return Encoding.UTF8.GetBytes("ENAME\u0012LIVING-ROOM-SERVERVERS\u00059.0.2UUID$a12c34ef-b567-8901-d234-56ef78901234JSON\u00049000CLIP\u00049090");
-                    }
-                    else
-                    {
-                        throw new OperationCanceledException();
-                    }
-                });
+                    callCount++;
+                    ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
+                    return Encoding.UTF8.GetBytes("ENAME\fMEDIA-SERVERVERS\u00059.0.2UUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6JSON\u00049000CLIP\u00049090");
+                }
+                if (callCount == 1)
+                {
+                    callCount++;
+                    ep = new IPEndPoint(IPAddress.Parse("230.186.191.21"), 3483);
+                    return Encoding.UTF8.GetBytes("ENAME\u0012LIVING-ROOM-SERVERVERS\u00059.0.2UUID$a12c34ef-b567-8901-d234-56ef78901234JSON\u00049000CLIP\u00049090");
+                }
+                else
+                {
+                    throw new OperationCanceledException();
+                }
+            });
             var servers = new List<MediaServer>()
             {
                 new MediaServer
@@ -177,7 +185,6 @@ namespace LmsDiscovery.Tests
 
             // Assert
             udpClientMock.Verify(m => m.Dispose(), Times.Once);
-
         }
 
         [Fact]
@@ -220,14 +227,12 @@ namespace LmsDiscovery.Tests
             // Arrange
             MockSend();
             var cancellationToken = new CancellationTokenSource();
-            udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
-                .Returns((ref IPEndPoint ep) =>
-                {
-                    cancellationToken.Cancel();
-                    ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
-                    return Encoding.UTF8.GetBytes(discoveryPacket);
-
-                });
+            MockReceive((ref IPEndPoint ep) =>
+            {
+                cancellationToken.Cancel();
+                ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
+                return Encoding.UTF8.GetBytes(discoveryPacket);
+            });
 
             //Act
             var response = Discovery.Discover(cancellationToken.Token, TimeSpan.MaxValue, udpClientMock.Object);
@@ -242,26 +247,25 @@ namespace LmsDiscovery.Tests
             //Arrange
             MockSend();
             int callCount = 0;
-            udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
-                .Returns((ref IPEndPoint ep) =>
+            MockReceive((ref IPEndPoint ep) =>
+            {
+                if (callCount == 0)
                 {
-                    if (callCount == 0)
-                    {
-                        callCount++;
-                        ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
-                        return Encoding.UTF8.GetBytes("ENAME\fMEDIA-SERVERVERS\u00059.0.2UUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6JSON\u00049000CLIP\u00049090");
-                    }
-                    if (callCount == 1)
-                    {
-                        callCount++;
-                        ep = new IPEndPoint(IPAddress.Parse("230.186.191.21"), 3483);
-                        return Encoding.UTF8.GetBytes("InvalidResponseString");
-                    }
-                    else
-                    {
-                        throw new OperationCanceledException();
-                    }
-                });
+                    callCount++;
+                    ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
+                    return Encoding.UTF8.GetBytes("ENAME\fMEDIA-SERVERVERS\u00059.0.2UUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6JSON\u00049000CLIP\u00049090");
+                }
+                if (callCount == 1)
+                {
+                    callCount++;
+                    ep = new IPEndPoint(IPAddress.Parse("230.186.191.21"), 3483);
+                    return Encoding.UTF8.GetBytes("InvalidResponseString");
+                }
+                else
+                {
+                    throw new OperationCanceledException();
+                }
+            });
             var servers = new List<MediaServer>()
             {
                 new MediaServer
@@ -290,20 +294,19 @@ namespace LmsDiscovery.Tests
             //Arrange
             MockSend();
             int callCount = 0;
-            udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
-                .Returns((ref IPEndPoint ep) =>
+            MockReceive((ref IPEndPoint ep) =>
+            {
+                if (callCount == 0)
                 {
-                    if (callCount == 0)
-                    {
-                        callCount++;
-                        ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
-                        return Encoding.UTF8.GetBytes("EJSON\u00049000CLIP\u00049090NAME\fMEDIA-SERVERUUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6VERS\u00059.0.2");
-                    }
-                    else
-                    {
-                        throw new SocketException((int)SocketError.TimedOut);
-                    }
-                });
+                    callCount++;
+                    ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
+                    return Encoding.UTF8.GetBytes("EJSON\u00049000CLIP\u00049090NAME\fMEDIA-SERVERUUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6VERS\u00059.0.2");
+                }
+                else
+                {
+                    throw new SocketException((int)SocketError.TimedOut);
+                }
+            });
             var servers = new List<MediaServer>()
             {
                 new MediaServer
@@ -332,20 +335,19 @@ namespace LmsDiscovery.Tests
             //Arrange
             MockSend();
             int callCount = 0;
-            udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
-                .Returns((ref IPEndPoint ep) =>
+            MockReceive((ref IPEndPoint ep) =>
+            {
+                if (callCount == 0)
                 {
-                    if (callCount == 0)
-                    {
-                        callCount++;
-                        ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
-                        return Encoding.UTF8.GetBytes("EJSON\u00049000CLIP\u00049090");
-                    }
-                    else
-                    {
-                        throw new SocketException((int)SocketError.TimedOut);
-                    }
-                });
+                    callCount++;
+                    ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
+                    return Encoding.UTF8.GetBytes("EJSON\u00049000CLIP\u00049090");
+                }
+                else
+                {
+                    throw new SocketException((int)SocketError.TimedOut);
+                }
+            });
 
             var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
 
@@ -362,19 +364,18 @@ namespace LmsDiscovery.Tests
             //Arrange
             MockSend();
             int callCount = 0;
-            udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
-                .Returns((ref IPEndPoint ep) =>
+            MockReceive((ref IPEndPoint ep) =>
+            {
+                if (callCount == 0)
                 {
-                    if (callCount == 0)
-                    {
-                        callCount++;
-                        return Encoding.UTF8.GetBytes(string.Empty);
-                    }
-                    else
-                    {
-                        throw new SocketException((int)SocketError.TimedOut);
-                    }
-                });
+                    callCount++;
+                    return Encoding.UTF8.GetBytes(string.Empty);
+                }
+                else
+                {
+                    throw new SocketException((int)SocketError.TimedOut);
+                }
+            });
 
             var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
 
@@ -391,19 +392,18 @@ namespace LmsDiscovery.Tests
             //Arrange
             MockSend();
             int callCount = 0;
-            udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
-                .Returns((ref IPEndPoint ep) =>
+            MockReceive((ref IPEndPoint ep) =>
+            {
+                if (callCount == 0)
                 {
-                    if (callCount == 0)
-                    {
-                        callCount++;
-                        return Encoding.UTF8.GetBytes("EThisIsAnInvalidResponse");
-                    }
-                    else
-                    {
-                        throw new SocketException((int)SocketError.TimedOut);
-                    }
-                });
+                    callCount++;
+                    return Encoding.UTF8.GetBytes("EThisIsAnInvalidResponse");
+                }
+                else
+                {
+                    throw new SocketException((int)SocketError.TimedOut);
+                }
+            });
 
             var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(1)).Token;
 
@@ -420,20 +420,19 @@ namespace LmsDiscovery.Tests
             //Arrange
             MockSend();
             int callCount = 0;
-            udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
-                .Returns((ref IPEndPoint ep) =>
+            MockReceive((ref IPEndPoint ep) =>
+            {
+                if (callCount == 0)
                 {
-                    if (callCount == 0)
-                    {
-                        callCount++;
-                        ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
-                        return Encoding.UTF8.GetBytes("EJSON\0CLIP\u00049090NAME\fMEDIA-SERVERUUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6VERS\u00059.0.2");
-                    }
-                    else
-                    {
-                        throw new SocketException((int)SocketError.TimedOut);
-                    }
-                });
+                    callCount++;
+                    ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
+                    return Encoding.UTF8.GetBytes("EJSON\0CLIP\u00049090NAME\fMEDIA-SERVERUUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6VERS\u00059.0.2");
+                }
+                else
+                {
+                    throw new SocketException((int)SocketError.TimedOut);
+                }
+            });
             var servers = new List<MediaServer>()
             {
                 new MediaServer
@@ -461,26 +460,25 @@ namespace LmsDiscovery.Tests
             //Arrange
             MockSend();
             int callCount = 0;
-            udpClientMock.Setup(m => m.Receive(ref It.Ref<IPEndPoint>.IsAny))
-                .Returns((ref IPEndPoint ep) =>
-                {
-                    if (callCount == 0)
-                    {
-                        callCount++;
-                        ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
-                        return Encoding.UTF8.GetBytes("ENAME\fMEDIA-SERVERVERS\u00059.0.2UUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6JSON\u00049000CLIP\u00049090");
-                    }
-                    if (callCount == 1)
-                    {
-                        callCount++;
-                        ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483); // Same IP
-                        return Encoding.UTF8.GetBytes("ENAME\fMEDIA-SERVERVERS\u00059.0.2UUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6JSON\u00049000CLIP\u00049090"); // Same response
-                    }
-                    else
-                    {
-                        throw new SocketException((int)SocketError.TimedOut);
-                    }
-                });
+            MockReceive((ref IPEndPoint ep) =>
+             {
+                 if (callCount == 0)
+                 {
+                     callCount++;
+                     ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483);
+                     return Encoding.UTF8.GetBytes("ENAME\fMEDIA-SERVERVERS\u00059.0.2UUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6JSON\u00049000CLIP\u00049090");
+                 }
+                 if (callCount == 1)
+                 {
+                     callCount++;
+                     ep = new IPEndPoint(IPAddress.Parse("107.70.178.215"), 3483); // Same IP
+                     return Encoding.UTF8.GetBytes("ENAME\fMEDIA-SERVERVERS\u00059.0.2UUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6JSON\u00049000CLIP\u00049090"); // Same response
+                 }
+                 else
+                 {
+                     throw new SocketException((int)SocketError.TimedOut);
+                 }
+             });
 
             var expectedServer = new MediaServer
             {
