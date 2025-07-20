@@ -3,9 +3,9 @@ using System.Net;
 namespace LyrionDiscovery
 {
     /// <summary>
-    /// Represents a Logitech Media Server discovered on the local network.
+    /// Represents a Lyrion Music Server discovered on the local network.
     /// </summary>
-    public class MediaServer
+    public class MusicServer
     {
         /// <summary>
         /// Gets or sets the name of the server.
@@ -38,13 +38,13 @@ namespace LyrionDiscovery
         public IPAddress? IPAddress { get; set; }
 
         /// <summary>
-        /// Determines whether the specified object is equal to the current <see cref="MediaServer"/> instance.
+        /// Determines whether the specified object is equal to the current <see cref="MusicServer"/> instance.
         /// </summary>
         /// <param name="obj">The object to compare with the current instance.</param>
         /// <returns><c>true</c> if the specified object is equal to the current instance; otherwise, <c>false</c>.</returns>
         public override bool Equals(object? obj)
         {
-            if (obj is not MediaServer other) return false;
+            if (obj is not MusicServer other) return false;
 
             return IPAddress?.Equals(other.IPAddress) == true &&
                    Name == other.Name &&
@@ -55,7 +55,7 @@ namespace LyrionDiscovery
         }
 
         /// <summary>
-        /// Returns a hash code for the current <see cref="MediaServer"/> instance.
+        /// Returns a hash code for the current <see cref="MusicServer"/> instance.
         /// </summary>
         /// <returns>A hash code for the current instance.</returns>
         public override int GetHashCode()

@@ -6,10 +6,10 @@ using System.Text;
 namespace LyrionDiscovery
 {
     /// <summary>
-    /// Discovers Logitech Media Servers on the local network using UDP broadcast.
+    /// Discovers Lyrion Music Servers on the local network using UDP broadcast.
     /// </summary>
     /// <summary>
-    /// Provides methods to discover Logitech Media Servers on the local network.
+    /// Provides methods to discover Lyrion Music Servers on the local network.
     /// </summary>
     public class Discovery
     {
@@ -18,18 +18,18 @@ namespace LyrionDiscovery
         private string discoveryPacket { get => $"{"EIPAD\0"}{string.Join("\0", discoveryPacketKeys)}{"\0"}"; }
 
         /// <summary>
-        /// Discovers Logitech Media Servers within the specified timeout using the provided UdpClient.
+        /// Discovers Lyrion Music Servers within the specified timeout using the provided UdpClient.
         /// </summary>
         /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
         /// <param name="requestTimeout">The maximum time to wait for server responses.</param>
         /// <param name="udpClient">The UdpClient instance used for sending and receiving UDP packets.</param>
         /// <returns>A list of server response strings received during discovery.</returns>
-        public IReadOnlyCollection<MediaServer> Discover(IUdpClient udpClient, TimeSpan requestTimeout, CancellationToken cancellationToken)
+        public IReadOnlyCollection<MusicServer> Discover(IUdpClient udpClient, TimeSpan requestTimeout, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(udpClient);
 
             int port = 3483;
-            var servers = new HashSet<MediaServer>();
+            var servers = new HashSet<MusicServer>();
 
             using (udpClient)
             {
@@ -80,12 +80,12 @@ namespace LyrionDiscovery
         }
 
         /// <summary>
-        /// Maps a dictionary of key-value pairs to a <see cref="MediaServer"/> object.
+        /// Maps a dictionary of key-value pairs to a <see cref="MusicServer"/> object.
         /// </summary>
-        /// <returns>A <see cref="MediaServer"/> object populated with data extracted from the response string.</returns>
-        private static MediaServer Map(IDictionary<string, string> keyValuePairs)
+        /// <returns>A <see cref="MusicServer"/> object populated with data extracted from the response string.</returns>
+        private static MusicServer Map(IDictionary<string, string> keyValuePairs)
         {
-            var server = new MediaServer
+            var server = new MusicServer
             {
                 Name = keyValuePairs.TryGetValue("NAME", out var name) && !string.IsNullOrWhiteSpace(name) ? name : null,
                 Version = keyValuePairs.TryGetValue("VERS", out var version) && !string.IsNullOrWhiteSpace(version) ? new Version(version) : null,
@@ -99,7 +99,7 @@ namespace LyrionDiscovery
 
 
         /// <summary>
-        /// Parses a byte array response from the Logitech Media Server discovery process into a dictionary of key-value pairs.
+        /// Parses a byte array response from the Lyrion Music Server discovery process into a dictionary of key-value pairs.
         /// The response is expected to be in a specific format where each key is 4 bytes long, followed by a 4-byte length value, and then the value itself.
         /// Keys and values are UTF-8 encoded strings.
         /// </summary>
@@ -143,7 +143,7 @@ namespace LyrionDiscovery
         }
 
         /// <summary>
-        /// Attempts to parse a byte array response from a Logitech Media Server discovery packet into a dictionary of key-value pairs.
+        /// Attempts to parse a byte array response from a Lyrion Music Server discovery packet into a dictionary of key-value pairs.
         /// </summary>
         /// <param name="response">The byte array containing the raw discovery response packet from the server.</param>
         /// <param name="result">When this method returns, contains the parsed key-value pairs if parsing was successful; otherwise, an empty dictionary.</param>

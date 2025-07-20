@@ -35,7 +35,7 @@ namespace LyrionDiscovery.Tests
             MockSend();
             MockReceive(SetupReceiveResponses("107.70.178.215", validMediaServerResponse));
 
-            var expected = new MediaServer
+            var expected = new MusicServer
             {
                 Name = "MEDIA-SERVER",
                 Version = new Version("9.0.2"),
@@ -62,9 +62,9 @@ namespace LyrionDiscovery.Tests
                 ("230.186.191.21", validLivingRoomServerResponse)
             ));
 
-            var servers = new List<MediaServer>()
+            var servers = new List<MusicServer>()
             {
-                new MediaServer
+                new MusicServer
                 {
                     Name = "MEDIA-SERVER",
                     Version = new Version("9.0.2"),
@@ -73,7 +73,7 @@ namespace LyrionDiscovery.Tests
                     Clip = 9090,
                     IPAddress = IPAddress.Parse("107.70.178.215")
                 },
-                new MediaServer
+                new MusicServer
                 {
                     Name = "LIVING-ROOM-SERVER",
                     Version = new Version("9.0.2"),
@@ -186,9 +186,9 @@ namespace LyrionDiscovery.Tests
                 ("107.70.178.215", validMediaServerResponse),
                 ("230.186.191.21", invalidResponse)
             ));
-            var servers = new List<MediaServer>()
+            var servers = new List<MusicServer>()
             {
-                new MediaServer
+                new MusicServer
                 {
                     Name = "MEDIA-SERVER",
                     Version = new Version("9.0.2"),
@@ -213,9 +213,9 @@ namespace LyrionDiscovery.Tests
             MockSend();
             MockReceive(SetupReceiveResponses("107.70.178.215", reorderedResponse));
 
-            var servers = new List<MediaServer>()
+            var servers = new List<MusicServer>()
             {
-                new MediaServer
+                new MusicServer
                 {
                     Name = "MEDIA-SERVER",
                     Version = new Version("9.0.2"),
@@ -282,9 +282,9 @@ namespace LyrionDiscovery.Tests
             MockSend();
             MockReceive(SetupReceiveResponses("107.70.178.215", missingValueResponse));
 
-            var servers = new List<MediaServer>()
+            var servers = new List<MusicServer>()
             {
-                new MediaServer
+                new MusicServer
                 {
                     Name = "MEDIA-SERVER",
                     Version = new Version("9.0.2"),
@@ -311,7 +311,7 @@ namespace LyrionDiscovery.Tests
                 ("107.70.178.215", validMediaServerResponse)
             ));
 
-            var expectedServer = new MediaServer
+            var expectedServer = new MusicServer
             {
                 Name = "MEDIA-SERVER",
                 Version = new Version("9.0.2"),
