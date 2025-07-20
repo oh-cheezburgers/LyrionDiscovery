@@ -11,11 +11,11 @@ namespace LmsDiscovery
     /// <summary>
     /// Provides methods to discover Logitech Media Servers on the local network.
     /// </summary>
-    public static class Discovery
+    public class Discovery
     {
-        private static IReadOnlyCollection<string> discoveryPacketKeys = ["NAME", "VERS", "UUID", "JSON", "CLIP"];
+        private IReadOnlyCollection<string> discoveryPacketKeys = ["NAME", "VERS", "UUID", "JSON", "CLIP"];
 
-        private static string discoveryPacket { get => $"{"EIPAD\0"}{string.Join("\0", discoveryPacketKeys)}{"\0"}"; }
+        private string discoveryPacket { get => $"{"EIPAD\0"}{string.Join("\0", discoveryPacketKeys)}{"\0"}"; }
 
         /// <summary>
         /// Discovers Logitech Media Servers within the specified timeout using the provided UdpClient.
@@ -23,12 +23,12 @@ namespace LmsDiscovery
         /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
         /// <param name="requestTimeout">The maximum time to wait for server responses.</param>
         /// <param name="udpClient">The UdpClient instance used for sending and receiving UDP packets.</param>
-        /// <param name="port">The UDP port to use for discovery (default is 3483).</param>
         /// <returns>A list of server response strings received during discovery.</returns>
-        public static IReadOnlyCollection<MediaServer> Discover(CancellationToken cancellationToken, TimeSpan requestTimeout, IUdpClient udpClient, int port = 3483)
+        public IReadOnlyCollection<MediaServer> Discover(IUdpClient udpClient, TimeSpan requestTimeout, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(udpClient);
 
+            int port = 3483;
             var servers = new HashSet<MediaServer>();
 
             using (udpClient)
@@ -158,7 +158,7 @@ namespace LmsDiscovery
         /// The method only returns <c>true</c> if parsing succeeds and at least one key-value pair is extracted,
         /// ensuring that the result contains meaningful data.
         /// </remarks>
-        private static bool TryParse(byte[] response, out Dictionary<string, string> result)
+        private bool TryParse(byte[] response, out Dictionary<string, string> result)
         {
             result = new Dictionary<string, string>();
             try

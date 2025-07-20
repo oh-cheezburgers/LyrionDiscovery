@@ -37,6 +37,11 @@ namespace LmsDiscovery
         /// </summary>
         public IPAddress? IPAddress { get; set; }
 
+        /// <summary>
+        /// Determines whether the specified object is equal to the current <see cref="MediaServer"/> instance.
+        /// </summary>
+        /// <param name="obj">The object to compare with the current instance.</param>
+        /// <returns><c>true</c> if the specified object is equal to the current instance; otherwise, <c>false</c>.</returns>
         public override bool Equals(object? obj)
         {
             if (obj is not MediaServer other) return false;
@@ -49,6 +54,10 @@ namespace LmsDiscovery
                    Clip == other.Clip;
         }
 
+        /// <summary>
+        /// Returns a hash code for the current <see cref="MediaServer"/> instance.
+        /// </summary>
+        /// <returns>A hash code for the current instance.</returns>
         public override int GetHashCode()
         {
             return HashCode.Combine(IPAddress, Name, Version, UUID, Json, Clip);
