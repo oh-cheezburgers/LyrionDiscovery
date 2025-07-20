@@ -41,6 +41,7 @@ public class Chunk
     /// <summary>
     /// Indicates whether the chunk is the start of a handshake.
     /// The handshake start is identified by the character 'E' at index 0.
+    /// Upper-case 'E' for response packet appears to be a protocol convention.
     /// </summary>
     public bool IsHandshakeStart => ParsedValue == 'E' && Index == 0;
 

@@ -15,7 +15,8 @@ namespace LyrionDiscovery
     {
         private IReadOnlyCollection<string> discoveryPacketKeys = ["NAME", "VERS", "UUID", "JSON", "CLIP"];
 
-        private string discoveryPacket { get => $"{"EIPAD\0"}{string.Join("\0", discoveryPacketKeys)}{"\0"}"; }
+        // Lower-case 'e' for sending discovery packet appears to be a protocol convention.
+        private string discoveryPacket { get => $"{"eIPAD\0"}{string.Join("\0", discoveryPacketKeys)}{"\0"}"; }
 
         /// <summary>
         /// Discovers Lyrion Music Servers within the specified timeout using the provided UdpClient.
