@@ -1,11 +1,11 @@
 using FluentAssertions;
-using LmsDiscovery.UdpClient;
+using LyrionDiscovery.UdpClient;
 using Moq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-namespace LmsDiscovery.Tests
+namespace LyrionDiscovery.Tests
 {
     public class DiscoveryTests
     {

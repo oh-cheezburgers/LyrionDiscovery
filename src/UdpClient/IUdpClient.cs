@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace LmsDiscovery.UdpClient;
+namespace LyrionDiscovery.UdpClient;
 
 /// <summary>
 /// An abstraction of the <see cref="UdpClient"/> class to facilitate testing and abstraction.

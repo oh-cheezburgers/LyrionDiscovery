@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\LmsDiscovery.csproj" />    
+    <ProjectReference Include="..\..\src\LyrionDiscovery.csproj" />    
   </ItemGroup>
 
   <ItemGroup>

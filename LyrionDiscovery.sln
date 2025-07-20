@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36221.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LmsDiscovery", "src\LmsDiscovery.csproj", "{4AE234F8-1588-7896-B20B-F7A784C95385}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LyrionDiscovery", "src\LyrionDiscovery.csproj", "{4AE234F8-1588-7896-B20B-F7A784C95385}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LmsDiscovery.Tests", "tests\LmsDiscovery.Tests\LmsDiscovery.Tests.csproj", "{3EB74BE8-FA9F-6991-4352-C0679FE3817C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LyrionDiscovery.Tests", "tests\LyrionDiscovery.Tests\LyrionDiscovery.Tests.csproj", "{3EB74BE8-FA9F-6991-4352-C0679FE3817C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

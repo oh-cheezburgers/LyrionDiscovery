@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Sockets;
 
-namespace LmsDiscovery.UdpClient;
+namespace LyrionDiscovery.UdpClient;
 
 /// <summary>
 /// Provides a wrapper for the <see cref="Socket"/> class to facilitate testing.

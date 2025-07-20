@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace LmsDiscovery
+namespace LyrionDiscovery
 {
     /// <summary>
     /// Represents a Logitech Media Server discovered on the local network.

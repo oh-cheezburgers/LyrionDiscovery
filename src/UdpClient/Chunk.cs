@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace LmsDiscovery.UdpClient;
+namespace LyrionDiscovery.UdpClient;
 
 /// <summary>
 /// Represents a chunk of data used in the discovery process.

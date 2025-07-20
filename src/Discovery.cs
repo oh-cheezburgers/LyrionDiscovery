@@ -1,9 +1,9 @@
-﻿using LmsDiscovery.UdpClient;
+﻿using LyrionDiscovery.UdpClient;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-namespace LmsDiscovery
+namespace LyrionDiscovery
 {
     /// <summary>
     /// Discovers Logitech Media Servers on the local network using UDP broadcast.

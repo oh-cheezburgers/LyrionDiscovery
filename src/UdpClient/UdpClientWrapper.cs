@@ -1,8 +1,8 @@
-using LmsDiscovery.UdpClient;
+using LyrionDiscovery.UdpClient;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 
-namespace LmsDiscovery;
+namespace LyrionDiscovery;
 
 /// <summary>
 /// Provides a wrapper for the <see cref="UdpClient"/> class to facilitate testing.
@@ -23,7 +23,7 @@ public class UdpClientWrapper : IUdpClient
     /// <inheritdoc />
     public ISocket Client
     {
-        get => new SocketWrapper(udpClient.Client); // Wrap the underlying Socket in a SocketWrapper
+        get => new UdpClient.SocketWrapper(udpClient.Client); // Wrap the underlying Socket in a SocketWrapper
         set => value.GetUnderlyingSocket();
     }
 
