@@ -4,7 +4,7 @@ namespace LyrionDiscovery.UdpClient;
 
 /// <summary>
 /// Represents a chunk of data used in the discovery process.
-/// /// Each chunk contains a byte value, its parsed character representation,
+/// Each chunk contains a byte value, its parsed character representation,
 /// and metadata indicating whether it has been parsed, its index, and whether it is the start
 /// </summary>
 public class Chunk
