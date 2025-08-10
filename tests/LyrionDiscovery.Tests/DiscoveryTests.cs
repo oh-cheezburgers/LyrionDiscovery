@@ -10,7 +10,7 @@ namespace LyrionDiscovery.Tests
     public class DiscoveryTests
     {
         private Mock<IUdpClient> udpClientMock;
-        private const string discoveryPacket = "EIPAD\0NAME\0VERS\0UUID\0JSON\0CLIP\0";
+        private const string discoveryPacket = "eIPAD\0NAME\0VERS\0UUID\0JSON\0CLIP\0";
         private const string validMediaServerResponse = "ENAME\fMEDIA-SERVERVERS\u00059.0.2UUID$b34f68fa-e9ae-4238-b2ce-18bb48fa26a6JSON\u00049000CLIP\u00049090";
         private const string validLivingRoomServerResponse = "ENAME\u0012LIVING-ROOM-SERVERVERS\u00059.0.2UUID$a12c34ef-b567-8901-d234-56ef78901234JSON\u00049000CLIP\u00049090";
         private const string invalidResponse = "InvalidResponseString";
