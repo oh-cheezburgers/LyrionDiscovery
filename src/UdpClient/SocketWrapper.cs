@@ -59,7 +59,9 @@ public class SocketWrapper : ISocket, IDisposable
     protected virtual void Dispose(bool disposing)
     {
         if (disposed)
+        {
             return;
+        }
 
         if (disposing)
         {

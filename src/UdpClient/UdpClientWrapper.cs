@@ -55,7 +55,9 @@ public class UdpClientWrapper : IUdpClient, IDisposable
     protected virtual void Dispose(bool disposing)
     {
         if (disposed)
+        {
             return;
+        }
 
         if (disposing)
         {

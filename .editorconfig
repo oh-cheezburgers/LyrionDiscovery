@@ -2,3 +2,6 @@
 
 # CA1707: Identifiers should not contain underscores
 dotnet_diagnostic.CA1707.severity = none
+
+#IDE0011: Use braces for multi-line statements
+csharp_prefer_braces = true: error

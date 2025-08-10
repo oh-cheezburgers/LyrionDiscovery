@@ -44,14 +44,17 @@ namespace LyrionDiscovery
         /// <returns><c>true</c> if the specified object is equal to the current instance; otherwise, <c>false</c>.</returns>
         public override bool Equals(object? obj)
         {
-            if (obj is not MusicServer other) return false;
+            if (obj is not MusicServer other)
+            {
+                return false;
+            }
 
             return IPAddress?.Equals(other.IPAddress) == true &&
-                   Name == other.Name &&
-                   Version?.Equals(other.Version) == true &&
-                   UUID?.Equals(other.UUID) == true &&
-                   Json == other.Json &&
-                   Clip == other.Clip;
+                       Name == other.Name &&
+                       Version?.Equals(other.Version) == true &&
+                       UUID?.Equals(other.UUID) == true &&
+                       Json == other.Json &&
+                       Clip == other.Clip;
         }
 
         /// <summary>
