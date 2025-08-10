@@ -9,9 +9,6 @@ namespace LyrionDiscovery
     /// <summary>
     /// Discovers Lyrion Music Servers on the local network using UDP broadcast.
     /// </summary>
-    /// <summary>
-    /// Provides methods to discover Lyrion Music Servers on the local network.
-    /// </summary>
     public class Discovery
     {
         private IReadOnlyCollection<string> discoveryPacketKeys = ["NAME", "VERS", "UUID", "JSON", "CLIP"];
@@ -106,7 +103,6 @@ namespace LyrionDiscovery
         /// Keys and values are UTF-8 encoded strings.
         /// </summary>
         /// <param name="response"></param>
-        /// <returns></returns>
         private static Dictionary<string, string> Parse(byte[] response)
         {
             var chunks = new List<Chunk>();
@@ -185,7 +181,6 @@ namespace LyrionDiscovery
         /// </summary>
         /// <param name="chunks"></param>
         /// <seealso href="https://github.com/LMS-Community/slimserver/blob/public/9.1/Slim/Networking/Discovery/Server.pm#L188"/>
-        /// <returns></returns>
         private static (string, string) ExtractKeyValuePair(List<Chunk> chunks)
         {
             var keyBuffer = new byte[4];

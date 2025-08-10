@@ -5,7 +5,7 @@ namespace LyrionDiscovery.UdpClient;
 /// <summary>
 /// Represents a chunk of data used in the discovery process.
 /// Each chunk contains a byte value, its parsed character representation,
-/// and metadata indicating whether it has been parsed, its index, and whether it is the start
+/// and metadata indicating whether it has been parsed, its index, and whether it is the start.
 /// </summary>
 public class Chunk
 {
@@ -34,7 +34,7 @@ public class Chunk
 
     /// <summary>
     /// The index of the chunk in the sequence.
-    /// This is used to determine the order of chunks and to identify special cases like the handshake
+    /// This is used to determine the order of chunks and to identify special cases like the handshake.
     /// </summary>
     public int? Index { get; set; }
 

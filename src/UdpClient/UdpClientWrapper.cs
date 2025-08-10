@@ -24,7 +24,7 @@ public class UdpClientWrapper : IUdpClient, IDisposable
     /// <inheritdoc />
     public ISocket Client
     {
-        get => new UdpClient.SocketWrapper(udpClient.Client); // Wrap the underlying Socket in a SocketWrapper
+        get => new SocketWrapper(udpClient.Client);
         set => value.GetUnderlyingSocket();
     }
 
