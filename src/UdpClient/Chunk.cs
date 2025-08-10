@@ -30,13 +30,13 @@ public class Chunk
     /// Indicates whether the chunk has been parsed.
     /// This property is used to track whether the chunk has been processed in the discovery sequence.
     /// </summary>
-    public bool HasBeenParsed { get; set; } = false;
+    public bool HasBeenParsed { get; set; }
 
     /// <summary>
     /// The index of the chunk in the sequence.
     /// This is used to determine the order of chunks and to identify special cases like the handshake
     /// </summary>
-    public int? Index { get; set; } = null;
+    public int? Index { get; set; }
 
     /// <summary>
     /// Indicates whether the chunk is the start of a handshake.

@@ -1,4 +1,5 @@
 ﻿using LyrionDiscovery.UdpClient;
+using System.Globalization;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -84,15 +85,15 @@ namespace LyrionDiscovery
         /// Maps a dictionary of key-value pairs to a <see cref="MusicServer"/> object.
         /// </summary>
         /// <returns>A <see cref="MusicServer"/> object populated with data extracted from the response string.</returns>
-        private static MusicServer Map(IDictionary<string, string> keyValuePairs)
+        private static MusicServer Map(Dictionary<string, string> keyValuePairs)
         {
             var server = new MusicServer
             {
                 Name = keyValuePairs.TryGetValue("NAME", out var name) && !string.IsNullOrWhiteSpace(name) ? name : null,
                 Version = keyValuePairs.TryGetValue("VERS", out var version) && !string.IsNullOrWhiteSpace(version) ? new Version(version) : null,
                 UUID = keyValuePairs.TryGetValue("UUID", out var uuid) && !string.IsNullOrWhiteSpace(uuid) ? new Guid(uuid) : null,
-                Json = keyValuePairs.TryGetValue("JSON", out var json) && !string.IsNullOrWhiteSpace(json) ? int.Parse(json) : (int?)null,
-                Clip = keyValuePairs.TryGetValue("CLIP", out var clip) && !string.IsNullOrWhiteSpace(clip) ? int.Parse(clip) : (int?)null
+                Json = keyValuePairs.TryGetValue("JSON", out var json) && !string.IsNullOrWhiteSpace(json) ? int.Parse(json, CultureInfo.InvariantCulture) : (int?)null,
+                Clip = keyValuePairs.TryGetValue("CLIP", out var clip) && !string.IsNullOrWhiteSpace(clip) ? int.Parse(clip, CultureInfo.InvariantCulture) : (int?)null
             };
 
             return server;

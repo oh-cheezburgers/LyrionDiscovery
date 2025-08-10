@@ -348,7 +348,7 @@ namespace LyrionDiscovery.Tests
                 });
         }
 
-        private MockReceiveDelegate SetupReceiveResponses(string ip, string response)
+        private static MockReceiveDelegate SetupReceiveResponses(string ip, string response)
         {
             const int port = 3483;
             int callCount = 0;
@@ -365,7 +365,7 @@ namespace LyrionDiscovery.Tests
             };
         }
 
-        private MockReceiveDelegate SetupReceiveResponses(params (string ip, string response)[] responses)
+        private static MockReceiveDelegate SetupReceiveResponses(params (string ip, string response)[] responses)
         {
             const int port = 3483;
             int callCount = 0;

@@ -8,9 +8,10 @@ namespace LyrionDiscovery;
 /// Provides a wrapper for the <see cref="UdpClient"/> class to facilitate testing.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class UdpClientWrapper : IUdpClient
+public class UdpClientWrapper : IUdpClient, IDisposable
 {
     private readonly System.Net.Sockets.UdpClient udpClient;
+    private bool disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UdpClientWrapper"/> class with default settings.
@@ -43,6 +44,24 @@ public class UdpClientWrapper : IUdpClient
     /// <inheritdoc />
     public void Dispose()
     {
-        udpClient.Dispose();
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Disposes the resources used by the <see cref="UdpClientWrapper"/> class.
+    /// </summary>
+    /// <param name="disposing">True if called from Dispose; false if called from finalizer.</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposed)
+            return;
+
+        if (disposing)
+        {
+            udpClient.Dispose();
+        }
+
+        disposed = true;
     }
 }
