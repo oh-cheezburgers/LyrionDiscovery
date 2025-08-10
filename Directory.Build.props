@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup>
+    <EnableNetAnalyzers>true</EnableNetAnalyzers>
+    <AnalysisMode>Recommended</AnalysisMode>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+</Project>
